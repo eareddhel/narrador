@@ -52,6 +52,10 @@ Controller → Service → Model
 
 ```
 narrador/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── workflows/
+│   └── PULL_REQUEST_TEMPLATE.md
 ├── app/
 │   ├── Controllers/
 │   │   ├── AudioController.php
@@ -83,8 +87,9 @@ narrador/
 ├── docs/
 │   ├── screenshots/
 │   ├── architecture.md
-│   ├── changelog.md
 │   ├── database.md
+│   ├── decisions.md
+│   ├── php.md
 │   └── roadmap.md
 ├── public/
 │   ├── assets/
@@ -105,13 +110,22 @@ narrador/
 │   ├── logs/
 │   ├── projects/
 │   └── temp/
+├── tools/
+│   ├── update-bootstrap.bat
+│   ├── update-icons.bat
+│   ├── clear-cache.php
+│   └── clear-audio.php
 ├── vendor/
 ├── views/
 │   ├── dashboard.php
 │   ├── layout.php
 │   └── project.php
+├── .editorconfig
 ├── .env
+├── .env.example
+├── .gitattributes
 ├── .gitignore
+├── CHANGELOG.md
 ├── README.md
 └── bootstrap.php
 ```
