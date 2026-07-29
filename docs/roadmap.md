@@ -6,7 +6,29 @@ Hitos del proyecto Narrador Studio.
 
 ## v0.1 — Arquitectura
 
-Microframework propio, estructura de carpetas, Router, Request, Response, View, Autoloader, Env, Database.
+Microframework propio con el siguiente flujo de inicialización:
+
+```
+Autoloader
+    ↓
+Env
+    ↓
+Constants
+    ↓
+Config
+    ↓
+Request
+    ↓
+Response
+    ↓
+View
+    ↓
+Database
+    ↓
+Router
+```
+
+Estructura de carpetas, convenciones PSR-4, separación de capas (Controller → Service → Model).
 
 ---
 
