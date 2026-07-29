@@ -1,0 +1,25 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+vendor/
+
+# Storage (generated files)
+storage/audio/
+storage/cache/
+storage/logs/
+storage/temp/
+storage/projects/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
