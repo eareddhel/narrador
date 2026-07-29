@@ -1,0 +1,14 @@
+* text=auto
+
+*.php text
+*.js text
+*.css text
+*.sql text
+*.md text
+
+*.mp3 binary
+*.wav binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.svg text
