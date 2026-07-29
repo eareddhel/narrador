@@ -88,6 +88,10 @@ narrador/
 │       └── ZipService.php
 ├── config/
 │   └── config.php
+│   └── constants.php
+│   └── database.php
+│   └── routes.php
+│   └── voices.php
 ├── database/
 │   └── schema.sql
 ├── docs/
@@ -119,6 +123,10 @@ narrador/
 │   ├── logs/
 │   ├── projects/
 │   └── temp/
+├── tests/
+│   ├── Unit/
+│   ├── Integration/
+│   ├── Feature/
 ├── tools/
 │   ├── update-bootstrap.bat
 │   ├── update-icons.bat
