@@ -1,5 +1,11 @@
 # Narrador Studio
 
+Professional Tutorial Narration Platform
+PHP • Bootstrap • Edge TTS
+Version 0.1
+
+# Narrador Studio
+
 Estudio de producción de narraciones para tutoriales. No es un generador de audios: es una herramienta profesional diseñada para crear, organizar y exportar narraciones de forma rápida y mantenible.
 
 ---
@@ -85,8 +91,12 @@ narrador/
 ├── database/
 │   └── schema.sql
 ├── docs/
+│   ├── mockups/
+│   ├── screenshots/
+│   ├── wireframes/
 │   ├── ARCHITECTURE.md
 │   ├── DATABASE.md
+│   ├── ROADMAP.md
 │   ├── DECISIONS.md
 │   ├── PHP.md
 │   └── ROADMAP.md
