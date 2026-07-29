@@ -85,12 +85,11 @@ narrador/
 ├── database/
 │   └── schema.sql
 ├── docs/
-│   ├── screenshots/
-│   ├── architecture.md
-│   ├── database.md
-│   ├── decisions.md
-│   ├── php.md
-│   └── roadmap.md
+│   ├── ARCHITECTURE.md
+│   ├── DATABASE.md
+│   ├── DECISIONS.md
+│   ├── PHP.md
+│   └── ROADMAP.md
 ├── public/
 │   ├── assets/
 │   │   ├── css/
