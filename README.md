@@ -142,9 +142,10 @@ narrador/
 ├── .env.example
 ├── .gitattributes
 ├── .gitignore
+├── bootstrap.php
 ├── CHANGELOG.md
-├── README.md
-└── bootstrap.php
+├── License
+└── README.md
 ```
 
 ---
