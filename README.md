@@ -100,7 +100,6 @@ narrador/
 │   ├── wireframes/
 │   ├── ARCHITECTURE.md
 │   ├── DATABASE.md
-│   ├── ROADMAP.md
 │   ├── DECISIONS.md
 │   ├── PHP.md
 │   └── ROADMAP.md
