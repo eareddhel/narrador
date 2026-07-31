@@ -31,7 +31,8 @@ final class Autoloader
             return;
         }
 
-        $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $class);
+        $relativePath = substr($class, 4);
+        $relativePath = str_replace('\\', DIRECTORY_SEPARATOR, $relativePath);
 
         $filePath = $this->baseDir . DIRECTORY_SEPARATOR . $relativePath . '.php';
 

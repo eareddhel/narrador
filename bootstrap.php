@@ -10,3 +10,5 @@ require_once ROOT_PATH . '/app/Core/Autoloader.php';
 
 $autoloader = new App\Core\Autoloader();
 $autoloader->register(ROOT_PATH . '/app');
+
+App\Core\Env::load();
