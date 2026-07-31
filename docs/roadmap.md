@@ -13,8 +13,6 @@ Autoloader
     ↓
 Env
     ↓
-Constants
-    ↓
 Config
     ↓
 Request
@@ -27,6 +25,40 @@ Database
     ↓
 Router
 ```
+
+### Iteración 001 — Autoloader
+Sistema de carga automática de clases (`spl_autoload_register`). Namespace `App\` mapeado a `app/`. Compatible Windows/Linux.
+
+### Iteración 002 — Env
+Gestor de variables de entorno. Lectura única de `.env`, caché interna, API tipada (`get`, `getString`, `getInt`, `getBool`, `has`, `all`).
+
+### Iteración 003 — Config
+Sistema de configuración modular por dominios funcionales. Clase `App\Core\Config` como capa de acceso centralizada.
+
+Archivos de configuración:
+- `app.php` — configuración general de la aplicación.
+- `database.php` — conexión y parámetros de base de datos.
+- `routes.php` — definición de rutas.
+- `tts.php` — configuración de servicios de síntesis de voz.
+- `constants.php` — constantes globales del sistema.
+
+Reglas:
+- `Env` proporciona las variables de entorno.
+- `Config` será la capa de acceso a la configuración.
+- `Database`, `Router`, `View` y los servicios consumirán `Config`, nunca los archivos directamente.
+- Ninguna clase accederá directamente a los archivos dentro de `config/`.
+
+### Iteración 004 — Request / Response
+Acceso a datos de entrada (`Request`) y respuestas HTTP (`Response`). Sin superglobales.
+
+### Iteración 005 — Router
+Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`).
+
+### Iteración 006 — View
+Motor de renderizado de plantillas.
+
+### Iteración 007 — Database
+Conexión PDO con patrón Singleton.
 
 Estructura de carpetas, convenciones PSR-4, separación de capas (Controller → Service → Model).
 

@@ -87,11 +87,11 @@ narrador/
 │       ├── SlugService.php
 │       └── ZipService.php
 ├── config/
-│   └── config.php
-│   └── constants.php
-│   └── database.php
-│   └── routes.php
-│   └── voices.php
+│   ├── app.php
+│   ├── constants.php
+│   ├── database.php
+│   ├── routes.php
+│   └── tts.php
 ├── database/
 │   └── schema.sql
 ├── docs/
@@ -160,6 +160,7 @@ narrador/
 | `Core/` | Framework interno (Router, Request, Response, etc.). |
 | `Helpers/` | Funciones auxiliares puras. |
 | `Views/` | Plantillas HTML/PHP sin lógica de negocio. |
+| `config/` | Configuración modular del sistema, organizada por dominios funcionales. |
 
 ---
 
@@ -174,6 +175,19 @@ Lee automáticamente el archivo `.env`. Uso:
 Env::get('DB_HOST');
 ```
 Nunca acceder a `$_ENV` directamente.
+
+### Config (`app/Core/Config.php`)
+Carga y gestiona la configuración modular del sistema. Los archivos de configuración se organizan por dominios funcionales dentro de `config/`:
+- `app.php` — configuración general de la aplicación.
+- `database.php` — conexión y parámetros de base de datos.
+- `routes.php` — definición de rutas.
+- `tts.php` — configuración de servicios de síntesis de voz.
+- `constants.php` — constantes globales del sistema.
+
+Cada archivo posee una única responsabilidad. Ninguna clase accederá directamente a los archivos dentro de `config/`. Toda la configuración del sistema deberá obtenerse mediante la API de `Config`:
+```php
+Config::get('database.host');
+```
 
 ### Database (`app/Core/Database.php`)
 Conexión PDO con patrón Singleton.
@@ -323,11 +337,32 @@ Nunca exponer IDs internos al usuario:
 
 ### Variables de entorno
 
-Toda configuración va en `.env`. Nunca en el código:
+Toda configuración sensible va en `.env`. Nunca en el código:
 ```
 ❌ $host = "localhost";
 ✅ DB_HOST=localhost  (en .env)
 ```
+
+### Configuración modular
+
+El sistema utiliza una configuración modular organizada por dominios funcionales. Cada archivo en `config/` posee una única responsabilidad:
+
+```
+config/
+├── app.php          — configuración general de la aplicación
+├── database.php     — conexión y parámetros de base de datos
+├── routes.php       — definición de rutas
+├── tts.php          — configuración de servicios de síntesis de voz
+└── constants.php    — constantes globales del sistema
+```
+
+Ninguna clase accederá directamente a los archivos dentro de `config/`. Toda la configuración del sistema deberá obtenerse mediante la API de `App\Core\Config`:
+```php
+Config::get('database.host');
+Config::get('app.timezone');
+```
+
+Una futura clase `App\Core\Config` será la responsable de cargar estos archivos y exponer los valores de forma centralizada.
 
 ---
 
