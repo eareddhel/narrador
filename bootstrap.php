@@ -1,7 +1,12 @@
 <?php
-define('ROOT_PATH', __DIR__);
 
-ROOT_PATH.'/storage';
-ROOT_PATH.'/config';
-ROOT_PATH.'/views';
-?>
+declare(strict_types=1);
+
+if (defined('ROOT_PATH') === false) {
+    define('ROOT_PATH', __DIR__);
+}
+
+require_once ROOT_PATH . '/app/Core/Autoloader.php';
+
+$autoloader = new App\Core\Autoloader();
+$autoloader->register(ROOT_PATH . '/app');
