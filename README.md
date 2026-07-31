@@ -201,11 +201,18 @@ Soporte para rutas:
 - `POST /audio/generate`
 
 ### Request (`app/Core/Request.php`)
-Acceso a datos de entrada sin usar superglobales:
+Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
 ```php
-Request::post('nombre');
-Request::get('id');
+Request::query('page');       // parámetros de la URL (query string)
+Request::post('nombre');      // datos enviados mediante HTTP POST
+Request::input('email');     // prioriza POST, fallback a query string
+Request::file('avatar');     // archivos multipart/form-data
+Request::header('Accept');   // cabeceras HTTP
+Request::cookie('session');  // cookies
+Request::server('REMOTE_ADDR'); // valores del servidor (uso estricto)
 ```
+
+Se evita deliberadamente `Request::get()` porque en el contexto HTTP significa "obtener un valor" y no guarda relación con el método HTTP GET. Las clases `Config`, `Env`, `Cache`, `Session` y otras clases de infraestructura sí utilizarán `get()` ya que en ese contexto el significado es explícito.
 
 ### Response (`app/Core/Response.php`)
 ```php
@@ -493,7 +500,7 @@ Error:
 Nunca confiar en superglobales. Todo dato pasa por `Request.php`:
 ```
 ❌ $_GET, $_POST, $_FILES, $_COOKIE
-✅ Request::get(), Request::post()
+✅ Request::query(), Request::post(), Request::file(), Request::cookie()
 ```
 
 ### Ejecución de comandos
