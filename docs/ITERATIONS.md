@@ -7,5 +7,5 @@
 
 ## 002 - Core / Env
 - Objetivo: Implementar el gestor de variables de entorno.
-- Estado: 🚧 En desarrollo
-
+- Estado: ✅ Completada
+- Commit: feat(core): implement env loader
