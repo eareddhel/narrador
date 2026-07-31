@@ -101,6 +101,7 @@ narrador/
 │   ├── ARCHITECTURE.md
 │   ├── DATABASE.md
 │   ├── DECISIONS.md
+│   ├── ITERATIONS.md
 │   ├── PHP.md
 │   └── ROADMAP.md
 ├── public/
@@ -517,6 +518,28 @@ echo $e->getMessage();
 | v1.0 | Primera versión estable |
 
 ---
+
+## Convención para commits
+
+Narrador Studio utiliza **Conventional Commits** para mantener un historial claro, facilitar la revisión del código y simplificar la generación de versiones. Un commit = Un objetivo.
+
+| Tipo      | Uso                                               |
+|-----------|---------------------------------------------------|
+| feat      | Nueva funcionalidad                               |
+| fix       | Corrección de errores                             |
+| refactor  | Reestructuración sin cambiar el comportamiento    |
+| docs      | Documentación                                     |
+| style     | Cambios de formato o estilo                       |
+| test      | Pruebas                                           |
+| chore     | Tareas de mantenimiento                           |
+
+### Ejemplos
+
+docs: add architecture specification
+docs: add development iteration tracker
+feat(core): implement autoloader
+feat(core): implement env loader
+feat(core): implement configuration loader
 
 ## Compromiso
 
