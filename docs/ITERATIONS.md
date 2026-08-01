@@ -19,3 +19,8 @@
 - Objetivo: Implementar la clase `App\Core\Response` como un objeto que represente una respuesta HTTP completa, con soporte para código de estado, cabeceras, cuerpo, respuestas JSON, redirecciones, descargas de archivos y envío mediante una API fluida (Fluent Interface).
 - Estado: ✅ Completada
 - Commit: feat(core): implement response object
+
+## 005 - Core / Request
+- Objetivo: Implementar la clase `App\Core\Request` como un objeto inmutable que represente una petición HTTP, capturando una única vez las superglobales y proporcionando una API orientada a objetos para acceder a los datos de la petición.
+- Estado: ✅ Completada
+- Commit: feat(core): implement request object
