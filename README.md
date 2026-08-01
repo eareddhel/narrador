@@ -178,18 +178,45 @@ narrador/
 
 ## Componentes del Core
 
-### Autoloader (`app/Core/Autoloader.php`)
+Los componentes del Core se dividen en dos categorías claramente diferenciadas.
+
+### Categorías de componentes
+
+| Categoría | Características | Componentes |
+|---|---|---|
+| **Servicios globales** | API estática, sin estado HTTP, se cargan una única vez | Env, Config |
+| **Objetos del ciclo HTTP** | Se instancian, poseen estado propio, cada petición genera nuevas instancias | Request, Response |
+
+### Flujo del ciclo HTTP
+
+```
+Cliente
+  ↓
+Request
+  ↓
+Router
+  ↓
+Controller
+  ↓
+Response
+  ↓
+Navegador
+```
+
+### Servicios globales
+
+#### Autoloader (`app/Core/Autoloader.php`)
 Carga automática de clases bajo el namespace `App\`.
 
-### Env (`app/Core/Env.php`)
-Lee automáticamente el archivo `.env`. Uso:
+#### Env (`app/Core/Env.php`)
+Servicio global. Lee automáticamente el archivo `.env`. Uso:
 ```php
 Env::get('DB_HOST');
 ```
 Nunca acceder a `$_ENV` directamente.
 
-### Config (`app/Core/Config.php`)
-Carga y gestiona la configuración modular del sistema. Los archivos de configuración se organizan por dominios funcionales dentro de `config/`:
+#### Config (`app/Core/Config.php`)
+Servicio global. Carga y gestiona la configuración modular del sistema. Los archivos de configuración se organizan por dominios funcionales dentro de `config/`:
 - `app.php` — configuración general de la aplicación.
 - `database.php` — conexión y parámetros de base de datos.
 - `routes.php` — definición de rutas.
@@ -201,40 +228,54 @@ Cada archivo posee una única responsabilidad. Ninguna clase accederá directame
 Config::get('database.host');
 ```
 
-### Response (`app/Core/Response.php`)
-Representa la respuesta HTTP de la aplicación. No depende de Request. Uso:
+### Objetos del ciclo HTTP
+
+#### Response (`app/Core/Response.php`)
+Objeto que representa la respuesta HTTP de la aplicación. No depende de Request. Uso:
 ```php
-Response::json($datos);
-Response::redirect('/');
+$response = new Response();
+$response->json($datos);
+$response->redirect('/');
 ```
 
-### Request (`app/Core/Request.php`)
-Representa la petición HTTP recibida. Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
+#### Request (`app/Core/Request.php`)
+Objeto que representa la petición HTTP recibida. Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
 ```php
-Request::query('page');       // parámetros de la URL (query string)
-Request::post('nombre');      // datos enviados mediante HTTP POST
-Request::input('email');     // prioriza POST, fallback a query string
-Request::file('avatar');     // archivos multipart/form-data
-Request::header('Accept');   // cabeceras HTTP
-Request::cookie('session');  // cookies
-Request::server('REMOTE_ADDR'); // valores del servidor (uso estricto)
+$request = new Request();
+$request->query('page');       // parámetros de la URL (query string)
+$request->post('nombre');      // datos enviados mediante HTTP POST
+$request->input('email');     // prioriza POST, fallback a query string
+$request->file('avatar');     // archivos multipart/form-data
+$request->header('Accept');   // cabeceras HTTP
+$request->cookie('session');  // cookies
+$request->server('REMOTE_ADDR'); // valores del servidor (uso estricto)
 ```
 
 Se evita deliberadamente `Request::get()` porque en el contexto HTTP significa "obtener un valor" y no guarda relación con el método HTTP GET. Las clases `Config`, `Env`, `Cache`, `Session` y otras clases de infraestructura sí utilizarán `get()` ya que en ese contexto el significado es explícito.
 
-### View (`app/Core/View.php`)
+### Componentes del ciclo HTTP (futuros)
+
+#### View (`app/Core/View.php`)
 Renderizado de plantillas.
 
-### Database (`app/Core/Database.php`)
+#### Database (`app/Core/Database.php`)
 Conexión PDO con patrón Singleton.
 
-### Router (`app/Core/Router.php`)
-Enrutador que utiliza tanto Request como Response para gestionar las peticiones HTTP. Soporte para rutas:
+#### Router (`app/Core/Router.php`)
+Enrutador que utiliza tanto Request como Response para gestionar las peticiones HTTP. El Router será el responsable de enviar finalmente la respuesta. Soporte para rutas:
 - `GET /`
 - `GET /project`
 - `GET /project/{uuid}`
 - `POST /project/create`
 - `POST /audio/generate`
+
+### Principios arquitectónicos
+
+- Env y Config son servicios globales con API estática.
+- Request y Response representan objetos del protocolo HTTP.
+- Los controladores nunca enviarán directamente contenido al navegador.
+- Los controladores devolverán un objeto Response.
+- El Router será el responsable de enviar finalmente la respuesta.
 
 ### Documentación técnica del Core
 
