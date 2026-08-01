@@ -41,3 +41,27 @@ View
 Database
 ↓
 Router
+
+## Plantilla para escribir documentación de un componente
+
+```markdown
+# Response
+
+## Responsabilidad
+
+## Filosofía de diseño
+
+## Ciclo de vida
+
+## API pública
+
+## Flujo interno
+
+## Dependencias
+
+## Ejemplos
+
+## Decisiones arquitectónicas
+
+## Futuras mejoras
+```
