@@ -140,10 +140,14 @@ narrador/
 │   ├── Integration/
 │   ├── Feature/
 ├── tools/
-│   ├── update-bootstrap.bat
-│   ├── update-icons.bat
+│   ├── clear-audio.php
 │   ├── clear-cache.php
-│   └── clear-audio.php
+│   ├── test-config.php
+│   ├── test-env.php
+│   ├── test-request.php
+│   ├── test-response.php
+│   ├── update-bootstrap.bat
+│   └── update-icons.bat
 ├── vendor/
 ├── views/
 │   ├── dashboard.php
