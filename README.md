@@ -76,7 +76,13 @@ narrador/
 │   │   ├── Request.php
 │   │   ├── Response.php
 │   │   ├── Router.php
-│   │   └── View.php
+│   │   ├── View.php
+│   │   └── Exceptions/
+│   │       ├── ConfigurationException.php
+│   │       ├── DatabaseException.php
+│   │       ├── RouteNotFoundException.php
+│   │       ├── ViewNotFoundException.php
+│   │       └── TTSException.php
 │   ├── Helpers/
 │   │   └── Utils.php
 │   ├── Models/
@@ -102,6 +108,7 @@ narrador/
 │   │   ├── CONFIG.md
 │   │   ├── DATABASE.md
 │   │   ├── ENV.md
+│   │   ├── EXCEPTIONS.md
 │   │   ├── README.md
 │   │   ├── REQUEST.md
 │   │   ├── RESPONSE.md
@@ -280,6 +287,42 @@ Enrutador que utiliza tanto Request como Response para gestionar las peticiones 
 - Los controladores nunca enviarán directamente contenido al navegador.
 - Los controladores devolverán un objeto Response.
 - El Router será el responsable de enviar finalmente la respuesta.
+
+### Excepciones del Core
+
+Cada componente del Core utilizará excepciones específicas que describan claramente el tipo de error producido. Se evita el uso directo de excepciones genéricas de PHP (`RuntimeException`, `Exception`, `InvalidArgumentException`, etc.) cuando exista una excepción propia del framework.
+
+Las excepciones representan errores de infraestructura del framework. Mejoran la legibilidad del código, el diagnóstico y el mantenimiento.
+
+| Excepción | Componente | Uso |
+|-----------|------------|-----|
+| `ConfigurationException` | Config | Errores de carga o acceso a configuración |
+| `DatabaseException` | Database | Errores de conexión o consulta a base de datos |
+| `RouteNotFoundException` | Router | Ruta no encontrada |
+| `ViewNotFoundException` | View | Plantilla no encontrada |
+| `TTSException` | EdgeTTSService | Errores en servicios de síntesis de voz |
+
+Todas las excepciones se ubican en `app/Core/Exceptions/` y heredan de `RuntimeException`.
+
+#### Relación con el ciclo HTTP
+
+- Request y Response no gestionan excepciones.
+- Router será el responsable de capturar las excepciones del Core.
+- En futuras iteraciones, el Router decidirá cómo convertir una excepción en una respuesta HTTP adecuada.
+
+```
+Cliente
+  ↓
+Request
+  ↓
+Router ← captura excepciones
+  ↓
+Controller
+  ↓
+Response
+  ↓
+Navegador
+```
 
 ### Documentación técnica del Core
 
