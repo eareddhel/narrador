@@ -1,9 +1,10 @@
 <?php
-// APP_NAME
-// STORAGE_PATH
-// VIEW_PATH
-// PROJECT_PATH
-// AUDIO_PATH
-// LOG_PATH
-// EXPORT_PATH
-?>
+
+return [
+    'storage_path' => ROOT_PATH . '/storage',
+    'view_path' => ROOT_PATH . '/views',
+    'project_path' => ROOT_PATH . '/storage/projects',
+    'audio_path' => ROOT_PATH . '/storage/audio',
+    'log_path' => ROOT_PATH . '/storage/logs',
+    'export_path' => ROOT_PATH . '/storage/export',
+];

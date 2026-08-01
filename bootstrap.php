@@ -12,3 +12,5 @@ $autoloader = new App\Core\Autoloader();
 $autoloader->register(ROOT_PATH . '/app');
 
 App\Core\Env::load();
+
+App\Core\Config::load();
