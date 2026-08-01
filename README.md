@@ -39,6 +39,8 @@ Apache
             ├─ Autoloader
             ├─ Env (.env)
             ├─ Config
+            ├─ Response
+            ├─ Request
             ├─ Router
             ├─ Controller
             │    └─ Service
@@ -95,6 +97,16 @@ narrador/
 ├── database/
 │   └── schema.sql
 ├── docs/
+│   ├── core/
+│   │   ├── AUTOLOADER.md
+│   │   ├── CONFIG.md
+│   │   ├── DATABASE.md
+│   │   ├── ENV.md
+│   │   ├── README.md
+│   │   ├── REQUEST.md
+│   │   ├── RESPONSE.md
+│   │   ├── ROUTER.md
+│   │   └── VIEW.md
 │   ├── mockups/
 │   ├── screenshots/
 │   ├── wireframes/
@@ -189,19 +201,15 @@ Cada archivo posee una única responsabilidad. Ninguna clase accederá directame
 Config::get('database.host');
 ```
 
-### Database (`app/Core/Database.php`)
-Conexión PDO con patrón Singleton.
-
-### Router (`app/Core/Router.php`)
-Soporte para rutas:
-- `GET /`
-- `GET /project`
-- `GET /project/{uuid}`
-- `POST /project/create`
-- `POST /audio/generate`
+### Response (`app/Core/Response.php`)
+Representa la respuesta HTTP de la aplicación. No depende de Request. Uso:
+```php
+Response::json($datos);
+Response::redirect('/');
+```
 
 ### Request (`app/Core/Request.php`)
-Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
+Representa la petición HTTP recibida. Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
 ```php
 Request::query('page');       // parámetros de la URL (query string)
 Request::post('nombre');      // datos enviados mediante HTTP POST
@@ -214,14 +222,42 @@ Request::server('REMOTE_ADDR'); // valores del servidor (uso estricto)
 
 Se evita deliberadamente `Request::get()` porque en el contexto HTTP significa "obtener un valor" y no guarda relación con el método HTTP GET. Las clases `Config`, `Env`, `Cache`, `Session` y otras clases de infraestructura sí utilizarán `get()` ya que en ese contexto el significado es explícito.
 
-### Response (`app/Core/Response.php`)
-```php
-Response::json($datos);
-Response::redirect('/');
-```
-
 ### View (`app/Core/View.php`)
 Renderizado de plantillas.
+
+### Database (`app/Core/Database.php`)
+Conexión PDO con patrón Singleton.
+
+### Router (`app/Core/Router.php`)
+Enrutador que utiliza tanto Request como Response para gestionar las peticiones HTTP. Soporte para rutas:
+- `GET /`
+- `GET /project`
+- `GET /project/{uuid}`
+- `POST /project/create`
+- `POST /audio/generate`
+
+### Documentación técnica del Core
+
+Cada componente importante del Core contará con documentación técnica independiente ubicada en `docs/core/`. Los documentos previstos son:
+
+| Documento | Componente |
+|---|---|
+| `autoloader.md` | Autoloader |
+| `env.md` | Env |
+| `config.md` | Config |
+| `response.md` | Response |
+| `request.md` | Request |
+| `view.md` | View |
+| `database.md` | Database |
+| `router.md` | Router |
+
+Cada documento describirá:
+- Responsabilidad.
+- Diseño.
+- API pública.
+- Flujo interno.
+- Decisiones arquitectónicas.
+- Ejemplos de uso.
 
 ---
 

@@ -15,9 +15,9 @@ Env
     ↓
 Config
     ↓
-Request
-    ↓
 Response
+    ↓
+Request
     ↓
 View
     ↓
@@ -48,17 +48,30 @@ Reglas:
 - `Database`, `Router`, `View` y los servicios consumirán `Config`, nunca los archivos directamente.
 - Ninguna clase accederá directamente a los archivos dentro de `config/`.
 
-### Iteración 004 — Request / Response
-Acceso a datos de entrada (`Request`) y respuestas HTTP (`Response`). Sin superglobales.
+### Iteración 004 — Response
+Representa la respuesta HTTP de la aplicación. No depende de Request. API para respuestas JSON, redirecciones y cabeceras.
 
-### Iteración 005 — Router
-Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`).
+Documentación: `docs/core/response.md`
+
+### Iteración 005 — Request
+Representa la petición HTTP recibida. Acceso a datos de entrada sin superglobales. API explícita sin método `get()` para eliminar confusión con HTTP GET.
+
+Documentación: `docs/core/request.md`
 
 ### Iteración 006 — View
 Motor de renderizado de plantillas.
 
+Documentación: `docs/core/view.md`
+
 ### Iteración 007 — Database
 Conexión PDO con patrón Singleton.
+
+Documentación: `docs/core/database.md`
+
+### Iteración 008 — Router
+Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`). Depende de Request, Response y View.
+
+Documentación: `docs/core/router.md`
 
 Estructura de carpetas, convenciones PSR-4, separación de capas (Controller → Service → Model).
 
