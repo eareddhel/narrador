@@ -6,7 +6,7 @@ declare(strict_types=1);
 |--------------------------------------------------------------------------
 | Narrador Studio
 |--------------------------------------------------------------------------
-| Archivo : ConfigurationException.php
+| Archivo : CoreException.php
 | Autor   : Roberto + ChatGPT
 | Version : 0.1.0
 |--------------------------------------------------------------------------
@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace App\Core\Exceptions;
 
-final class ConfigurationException extends CoreException
+use RuntimeException;
+
+class CoreException extends RuntimeException
 {
 }
