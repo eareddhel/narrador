@@ -24,3 +24,8 @@
 - Objetivo: Implementar la clase `App\Core\Request` como un objeto inmutable que represente una petición HTTP, capturando una única vez las superglobales y proporcionando una API orientada a objetos para acceder a los datos de la petición.
 - Estado: ✅ Completada
 - Commit: feat(core): implement request object
+
+## 006 - Core / View
+- Objetivo: Implementar la clase `App\Core\View` como un renderizador orientado a objetos capaz de localizar plantillas PHP, exponer datos, aplicar layouts, capturar la salida de forma segura y devolver el resultado mediante un objeto `Response`.
+- Estado: ✅ Completada
+- Commit: feat(core): implement view renderer
