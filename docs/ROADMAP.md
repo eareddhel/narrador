@@ -80,7 +80,15 @@ Capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por
 Documentación: `docs/core/DATABASE.md`
 
 ### Iteración 008 — Router
-Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`). Coordina `Request::capture()`, resolución de rutas, controllers, captura de `CoreException` y envío final mediante `Response::send()`. Depende de Request, Response y View.
+Enrutador como objeto responsable de coordinar el ciclo HTTP. Captura la petición con `Request::capture()`, resuelve rutas explícitas por método y URI, extrae parámetros nombrados como `/project/{uuid}`, invoca Controllers invocables, recibe un objeto Response, captura `CoreException` y ejecuta el envío final mediante `Response::send()`.
+
+Alcance inicial:
+- soporte para GET y POST;
+- rutas declaradas explícitamente, sin autodetección;
+- Controllers invocables mediante `__invoke()`;
+- `RouteNotFoundException` para rutas inexistentes;
+- transformación segura de errores del Core en respuestas HTTP;
+- sin API estática, attributes, annotations, reflexión ni middleware.
 
 Documentación: `docs/core/ROUTER.md`
 

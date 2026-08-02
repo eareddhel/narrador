@@ -75,3 +75,14 @@ Registro de decisiones de diseño del proyecto. Las decisiones arquitectónicas 
 **Decisión:** Los audios se guardan en `storage/audio/`, fuera de `public/`. Solo son accesibles mediante controladores que validan permisos.
 
 **Consecuencias:** Mayor seguridad. Los archivos no se sirven directamente por Apache. Se necesita un endpoint para descargar o reproducir audios.
+---
+
+### DEC-006: Router explícito y Controllers invocables
+
+**Estado:** Aceptada
+
+**Contexto:** La Iteración 008 implementará el coordinador final del ciclo HTTP.
+
+**Decisión:** Router será un objeto que registra rutas explícitas, captura `Request::capture()`, resuelve método y URI, invoca Controllers invocables de una sola acción, recibe objetos Response y ejecuta `Response::send()`. No habrá reflexión, autodetección de rutas, attributes, annotations ni middleware en esta iteración.
+
+**Consecuencias:** El flujo HTTP queda explícito y predecible. Las rutas tienen un origen claro en `config/routes.php`. Los Controllers se mantienen pequeños y orientados a una acción.

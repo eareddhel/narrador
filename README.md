@@ -114,7 +114,8 @@ narrador/
 │   │   ├── 002-global-services.md
 │   │   ├── 003-http-request-response-objects.md
 │   │   ├── 004-modular-configuration.md
-│   │   └── 005-custom-core-exceptions.md
+│   │   ├── 005-custom-core-exceptions.md
+│   │   └── 006-explicit-router-and-invokable-controllers.md
 │   ├── core/
 │   │   ├── AUTOLOADER.md
 │   │   ├── CONFIG.md
@@ -296,12 +297,21 @@ Renderizado de plantillas.
 Capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por instancia.
 
 #### Router (`app/Core/Router.php`)
-Enrutador que coordina el ciclo HTTP. Captura la petición con `Request::capture()`, resuelve la ruta, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía finalmente la respuesta con `Response::send()`. Soporte para rutas:
+Enrutador como objeto del ciclo HTTP. Captura la petición con `Request::capture()`, resuelve rutas explícitas por método y URI, extrae parámetros nombrados como `/project/{uuid}`, invoca Controllers invocables, recibe un objeto Response, captura excepciones del Core y envía finalmente la respuesta con `Response::send()`.
+
+Soporte inicial previsto:
 - `GET /`
 - `GET /project`
 - `GET /project/{uuid}`
 - `POST /project/create`
 - `POST /audio/generate`
+
+Reglas:
+- Las rutas se registran de forma explícita.
+- No se utiliza una API estática ni fachada estática de rutas.
+- No hay autodetección de Controllers, attributes, annotations ni reflexión para descubrir rutas.
+- Una ruta inexistente lanza `RouteNotFoundException`.
+- Middleware no forma parte de Iteración 008.
 
 ### Principios arquitectónicos
 
@@ -372,6 +382,7 @@ Las decisiones arquitectónicas importantes se registran como ADRs en `docs/adr/
 | `003-http-request-response-objects.md` | Request y Response como objetos por petición HTTP |
 | `004-modular-configuration.md` | Configuración modular accedida exclusivamente mediante Config |
 | `005-custom-core-exceptions.md` | Jerarquía de excepciones con CoreException como clase base |
+| `006-explicit-router-and-invokable-controllers.md` | Router explícito y Controllers invocables |
 
 ### Documentación técnica del Core
 
