@@ -1,10 +1,24 @@
 # Decisiones arquitectónicas
 
-Registro de decisiones de diseño del proyecto (Architecture Decision Records — ADR). Cada documento explica por qué se tomó una decisión, no solo cómo está implementado.
+Registro de decisiones de diseño del proyecto. Las decisiones arquitectónicas formales se documentan como ADRs en `docs/adr/`. Este archivo funciona como índice general y mantiene también decisiones históricas aceptadas que no pertenecen al Core.
 
 ---
 
-## ADR-001: No usar Composer inicialmente
+## ADRs formales del Core
+
+| ADR | Estado | Decisión |
+|---|---|---|
+| [ADR-001](adr/001-core-architecture.md) | Aceptado | Arquitectura del Core y separación de capas |
+| [ADR-002](adr/002-global-services.md) | Aceptado | Env y Config como servicios globales estáticos |
+| [ADR-003](adr/003-http-request-response-objects.md) | Aceptado | Request y Response como objetos por petición HTTP |
+| [ADR-004](adr/004-modular-configuration.md) | Aceptado | Configuración modular accedida exclusivamente mediante Config |
+| [ADR-005](adr/005-custom-core-exceptions.md) | Aceptado | Jerarquía de excepciones con CoreException como clase base |
+
+---
+
+## Decisiones históricas aceptadas
+
+### DEC-001: No usar Composer inicialmente
 
 **Estado:** Aceptada
 
@@ -16,7 +30,7 @@ Registro de decisiones de diseño del proyecto (Architecture Decision Records �
 
 ---
 
-## ADR-002: Todo TTS se implementa mediante Services
+### DEC-002: Todo TTS se implementa mediante Services
 
 **Estado:** Aceptada
 
@@ -28,7 +42,7 @@ Registro de decisiones de diseño del proyecto (Architecture Decision Records �
 
 ---
 
-## ADR-003: Bootstrap local, sin CDN
+### DEC-003: Bootstrap local, sin CDN
 
 **Estado:** Aceptada
 
@@ -40,7 +54,7 @@ Registro de decisiones de diseño del proyecto (Architecture Decision Records �
 
 ---
 
-## ADR-004: JavaScript Vanilla, sin frameworks
+### DEC-004: JavaScript Vanilla, sin frameworks
 
 **Estado:** Aceptada
 
@@ -52,7 +66,7 @@ Registro de decisiones de diseño del proyecto (Architecture Decision Records �
 
 ---
 
-## ADR-005: Los audios se almacenan en storage/audio
+### DEC-005: Los audios se almacenan en storage/audio
 
 **Estado:** Aceptada
 

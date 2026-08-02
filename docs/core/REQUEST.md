@@ -18,7 +18,7 @@ No existen setters. No existen métodos de validación. No existen métodos de s
 
 ## Ciclo de vida
 
-1. El Router o Bootstrap invoca `Request::capture()`.
+1. El Router invoca `Request::capture()` como parte de la coordinación del ciclo HTTP.
 2. Se capturan una única vez `$_GET`, `$_POST`, `$_FILES`, `$_COOKIE` y `$_SERVER`.
 3. El objeto resultante se pasa al Controller.
 4. El Controller consulta los datos mediante la API pública.
@@ -177,6 +177,7 @@ if ($request->isSecure()) {
 3. **Constructor privado**: La única forma de crear instancias es mediante `capture()`.
 4. **Sin método get()**: Se evita la confusión con el verbo HTTP GET. Se usa `query()` para query string.
 5. **API explícita**: Cada método tiene un nombre claro que describe su origen.
+6. **Coordinación desde Router**: Request::capture() no pertenece al bootstrap; el Router coordina cuándo capturar la petición.
 
 ## Futuras mejoras
 

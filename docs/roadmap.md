@@ -6,25 +6,27 @@ Hitos del proyecto Narrador Studio.
 
 ## v0.1 — Arquitectura
 
-Microframework propio con el siguiente flujo de inicialización:
+Microframework propio con el siguiente flujo de inicialización y ciclo HTTP:
 
 ```
-Autoloader
-    ↓
-Env
-    ↓
-Config
-    ↓
-Response
-    ↓
-Request
-    ↓
-View
-    ↓
-Database
-    ↓
-Router
+Apache
+  -> public/index.php
+  -> bootstrap.php
+  -> Autoloader
+  -> Env
+  -> Config
+  -> Router
+       -> Request::capture()
+       -> resolver ruta
+       -> Controller
+       -> Service
+       -> Model
+       -> View
+       -> Response
+       -> Response::send()
 ```
+
+`Request::capture()` no pertenece al bootstrap. El Router coordina la petición HTTP, captura excepciones del Core y envía la respuesta final.
 
 ### Iteración 001 — Autoloader
 Sistema de carga automática de clases (`spl_autoload_register`). Namespace `App\` mapeado a `app/`. Compatible Windows/Linux.
@@ -58,6 +60,15 @@ Representa la petición HTTP recibida. Acceso a datos de entrada sin superglobal
 
 Documentación: `docs/core/request.md`
 
+### Consolidación arquitectónica previa a View
+Jerarquía común de excepciones del Core mediante `CoreException`. ADRs formales para arquitectura del Core, servicios globales, objetos HTTP, configuración modular y excepciones propias.
+
+Reglas consolidadas:
+- Env y Config son servicios globales estáticos.
+- Request y Response son objetos del ciclo HTTP.
+- Los controllers devuelven objetos Response.
+- Router coordina el ciclo HTTP, captura `CoreException` y ejecuta `Response::send()`.
+
 ### Iteración 006 — View
 Motor de renderizado de plantillas.
 
@@ -69,7 +80,7 @@ Conexión PDO con patrón Singleton.
 Documentación: `docs/core/database.md`
 
 ### Iteración 008 — Router
-Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`). Depende de Request, Response y View.
+Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`). Coordina `Request::capture()`, resolución de rutas, controllers, captura de `CoreException` y envío final mediante `Response::send()`. Depende de Request, Response y View.
 
 Documentación: `docs/core/router.md`
 

@@ -39,14 +39,18 @@ Apache
             ├─ Autoloader
             ├─ Env (.env)
             ├─ Config
-            ├─ Response
-            ├─ Request
-            ├─ Router
-            ├─ Controller
-            │    └─ Service
-            │         └─ Model
-            └─ View
+            └─ Router
+                 ├─ Request::capture()
+                 ├─ resolver ruta
+                 ├─ Controller
+                 │    └─ Service
+                 │         └─ Model
+                 ├─ View
+                 ├─ Response
+                 └─ Response::send()
 ```
+
+`Request::capture()` no pertenece al bootstrap. El Router coordina el ciclo HTTP completo: captura la petición, resuelve la ruta, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía la respuesta final.
 
 ### Regla de capas
 
@@ -78,6 +82,7 @@ narrador/
 │   │   ├── Router.php
 │   │   ├── View.php
 │   │   └── Exceptions/
+│   │       ├── CoreException.php
 │   │       ├── ConfigurationException.php
 │   │       ├── DatabaseException.php
 │   │       ├── RouteNotFoundException.php
@@ -103,6 +108,13 @@ narrador/
 ├── database/
 │   └── schema.sql
 ├── docs/
+│   ├── adr/
+│   │   ├── README.md
+│   │   ├── 001-core-architecture.md
+│   │   ├── 002-global-services.md
+│   │   ├── 003-http-request-response-objects.md
+│   │   ├── 004-modular-configuration.md
+│   │   └── 005-custom-core-exceptions.md
 │   ├── core/
 │   │   ├── AUTOLOADER.md
 │   │   ├── CONFIG.md
@@ -203,15 +215,26 @@ Los componentes del Core se dividen en dos categorías claramente diferenciadas.
 ```
 Cliente
   ↓
-Request
-  ↓
 Router
-  ↓
-Controller
-  ↓
-Response
+  ├─ Request::capture()
+  ├─ resolver ruta
+  ├─ Controller
+  ├─ Response
+  └─ Response::send()
   ↓
 Navegador
+```
+
+El Router es el coordinador del ciclo HTTP. Request y Response son objetos por petición, pero su creación/envío se organiza desde Router.
+
+### Flujo de capas de aplicación
+
+```
+Controller
+  ↓
+Service
+  ↓
+Model
 ```
 
 ### Servicios globales
@@ -252,7 +275,7 @@ $response->redirect('/');
 #### Request (`app/Core/Request.php`)
 Objeto que representa la petición HTTP recibida. Acceso a datos de entrada sin usar superglobales. API explícita y deliberadamente sin método `get()` para eliminar la confusión con el método HTTP GET:
 ```php
-$request = new Request();
+$request = Request::capture();
 $request->query('page');       // parámetros de la URL (query string)
 $request->post('nombre');      // datos enviados mediante HTTP POST
 $request->input('email');     // prioriza POST, fallback a query string
@@ -273,7 +296,7 @@ Renderizado de plantillas.
 Conexión PDO con patrón Singleton.
 
 #### Router (`app/Core/Router.php`)
-Enrutador que utiliza tanto Request como Response para gestionar las peticiones HTTP. El Router será el responsable de enviar finalmente la respuesta. Soporte para rutas:
+Enrutador que coordina el ciclo HTTP. Captura la petición con `Request::capture()`, resuelve la ruta, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía finalmente la respuesta con `Response::send()`. Soporte para rutas:
 - `GET /`
 - `GET /project`
 - `GET /project/{uuid}`
@@ -287,6 +310,7 @@ Enrutador que utiliza tanto Request como Response para gestionar las peticiones 
 - Los controladores nunca enviarán directamente contenido al navegador.
 - Los controladores devolverán un objeto Response.
 - El Router será el responsable de enviar finalmente la respuesta.
+- El Router será el responsable de capturar `CoreException`.
 
 ### Excepciones del Core
 
@@ -296,33 +320,58 @@ Las excepciones representan errores de infraestructura del framework. Mejoran la
 
 | Excepción | Componente | Uso |
 |-----------|------------|-----|
+| `CoreException` | Core | Clase base común para errores del framework |
 | `ConfigurationException` | Config | Errores de carga o acceso a configuración |
 | `DatabaseException` | Database | Errores de conexión o consulta a base de datos |
 | `RouteNotFoundException` | Router | Ruta no encontrada |
 | `ViewNotFoundException` | View | Plantilla no encontrada |
 | `TTSException` | EdgeTTSService | Errores en servicios de síntesis de voz |
 
-Todas las excepciones se ubican en `app/Core/Exceptions/` y heredan de `RuntimeException`.
+Todas las excepciones se ubican en `app/Core/Exceptions/`. `CoreException` hereda de `RuntimeException`; las excepciones específicas heredan de `CoreException`.
+
+```
+RuntimeException
+  └─ CoreException
+       ├─ ConfigurationException
+       ├─ DatabaseException
+       ├─ RouteNotFoundException
+       ├─ ViewNotFoundException
+       └─ TTSException
+```
 
 #### Relación con el ciclo HTTP
 
 - Request y Response no gestionan excepciones.
-- Router será el responsable de capturar las excepciones del Core.
-- En futuras iteraciones, el Router decidirá cómo convertir una excepción en una respuesta HTTP adecuada.
+- Router será el responsable de capturar `CoreException`.
+- Router transformará errores del Core en respuestas HTTP adecuadas.
+- En modo debug, el Router podrá mostrar información técnica adicional.
+- En producción, el Router mostrará mensajes seguros para el usuario.
 
 ```
 Cliente
   ↓
-Request
-  ↓
-Router ← captura excepciones
-  ↓
-Controller
-  ↓
-Response
+Router ← captura CoreException
+  ├─ Request::capture()
+  ├─ Controller
+  ├─ Service
+  ├─ Model
+  ├─ View
+  └─ Response
   ↓
 Navegador
 ```
+
+### Architecture Decision Records
+
+Las decisiones arquitectónicas importantes se registran como ADRs en `docs/adr/`.
+
+| ADR | Decisión |
+|---|---|
+| `001-core-architecture.md` | Arquitectura del Core y separación de capas |
+| `002-global-services.md` | Env y Config como servicios globales estáticos |
+| `003-http-request-response-objects.md` | Request y Response como objetos por petición HTTP |
+| `004-modular-configuration.md` | Configuración modular accedida exclusivamente mediante Config |
+| `005-custom-core-exceptions.md` | Jerarquía de excepciones con CoreException como clase base |
 
 ### Documentación técnica del Core
 
@@ -493,7 +542,7 @@ Config::get('database.host');
 Config::get('app.timezone');
 ```
 
-Una futura clase `App\Core\Config` será la responsable de cargar estos archivos y exponer los valores de forma centralizada.
+La clase `App\Core\Config` es responsable de cargar estos archivos y exponer los valores de forma centralizada.
 
 ---
 
