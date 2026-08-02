@@ -2,27 +2,34 @@
 
 ## Responsabilidad
 
-Request representa una petición HTTP capturada en un momento determinado. Es una fotografía inmutable de los datos de entrada.
+Request representa una petición HTTP capturada en un momento determinado. Es una fotografía inmutable de los datos de entrada, incluyendo query string, POST, archivos, cookies, cabeceras, server y parámetros de ruta.
 
 ## Filosofía de diseño
 
-Request es un objeto inmutable. Una vez creado mediante `Request::capture()`, nunca modifica su estado interno ni vuelve a consultar las superglobales.
+Request es un objeto inmutable. Una vez creado, nunca modifica su estado interno ni vuelve a consultar las superglobales.
 
-La única forma de crear una instancia es mediante el método estático `capture()`:
+La creación inicial de una instancia se realiza mediante el método estático `capture()`:
 
 ```php
 $request = Request::capture();
 ```
 
-No existen setters. No existen métodos de validación. No existen métodos de sanitización. La única responsabilidad de Request es representar la petición.
+Router podrá enriquecer la petición con parámetros de ruta mediante `withRouteParameters(array $parameters): self`. Ese método no modifica la instancia original; devuelve una nueva instancia con los parámetros incorporados.
+
+Esta estrategia adopta una filosofía inspirada en PSR-7, sin implementar PSR-7 completo. Request mantiene una API propia, pequeña y coherente con Narrador Studio.
+
+No existen setters públicos. No existirán mutadores como `setRouteParameters()`. No existen métodos de validación. No existen métodos de sanitización. La única responsabilidad de Request es representar la petición.
 
 ## Ciclo de vida
 
 1. El Router invoca `Request::capture()` como parte de la coordinación del ciclo HTTP.
 2. Se capturan una única vez `$_GET`, `$_POST`, `$_FILES`, `$_COOKIE` y `$_SERVER`.
-3. El objeto resultante se pasa al Controller.
-4. El Controller consulta los datos mediante la API pública.
-5. El objeto se descarta al finalizar la petición.
+3. Router resuelve los parámetros nombrados de la ruta.
+4. Router llama a `withRouteParameters()` sobre el Request capturado.
+5. `withRouteParameters()` devuelve una nueva instancia enriquecida.
+6. Router utiliza esa nueva instancia para invocar el Controller.
+7. El Controller consulta los datos mediante la API pública.
+8. El objeto se descarta al finalizar la petición.
 
 ## API pública
 
@@ -51,6 +58,38 @@ No existen setters. No existen métodos de validación. No existen métodos de s
 | `cookie(string $key, mixed $default)` | `mixed` | Obtiene una cookie |
 | `header(string $key, mixed $default)` | `mixed` | Obtiene una cabecera HTTP |
 | `server(string $key, mixed $default)` | `mixed` | Obtiene un valor del servidor |
+
+### Parámetros de ruta
+
+| Método | Retorna | Descripción |
+|--------|---------|-------------|
+| `route(string $key, mixed $default = null)` | `mixed` | Obtiene un parámetro resuelto desde la URI |
+| `routeParameters()` | `array` | Retorna todos los parámetros de ruta |
+| `withRouteParameters(array $parameters)` | `self` | Devuelve una nueva instancia con parámetros de ruta |
+
+Los parámetros de ruta representan valores obtenidos desde la URI al resolver una ruta explícita.
+
+Ejemplo:
+
+```text
+Ruta: /projects/{uuid}
+URI:  /projects/6ab4...
+```
+
+Router incorpora el parámetro sin modificar el Request original:
+
+```php
+$request = Request::capture();
+$requestWithRoute = $request->withRouteParameters(['uuid' => '6ab4...']);
+```
+
+El Controller recibe la nueva instancia y obtiene el valor mediante Request:
+
+```php
+$uuid = $request->route('uuid');
+```
+
+Estos parámetros forman parte de la petición HTTP. No sustituyen `query()` ni `post()`, y son independientes del query string.
 
 ### Información de la petición
 
@@ -90,7 +129,26 @@ public static function capture(): self
 }
 ```
 
-El constructor es privado. Solo `capture()` puede crear instancias. Los datos se copian directamente de las superglobales.
+El constructor es privado en la implementación actual. `capture()` crea la instancia inicial y copia directamente los datos de las superglobales.
+
+### withRouteParameters()
+
+```php
+public function withRouteParameters(array $parameters): self
+```
+
+`withRouteParameters()` será el único mecanismo documentado para añadir parámetros de ruta a Request.
+
+Reglas:
+
+- no modifica la instancia original;
+- devuelve una nueva instancia;
+- conserva los datos ya capturados de query string, POST, archivos, cookies, headers y server;
+- reemplaza el conjunto de parámetros de ruta en la nueva instancia;
+- será utilizado por Router después de resolver la ruta;
+- no estará pensado para uso desde Controllers, Services, Models ni Views.
+
+No se documenta todavía la implementación interna exacta del constructor o clonación. La restricción arquitectónica sí queda fijada: no habrá mutadores como `setRouteParameters()`.
 
 ### header()
 
@@ -156,6 +214,31 @@ $soloNecesarios = $request->only(['nombre', 'email']);
 $sinPassword = $request->except(['password', 'password_confirm']);
 ```
 
+### Obtener parámetros de ruta
+
+```php
+$uuid = $request->route('uuid');
+$routeParameters = $request->routeParameters();
+```
+
+Los Controllers no reciben parámetros de ruta como argumentos independientes. La firma aprobada continúa siendo:
+
+```php
+public function __invoke(Request $request): Response
+{
+    // ...
+}
+```
+
+No será válido:
+
+```php
+public function __invoke(Request $request, string $uuid): Response
+{
+    // ...
+}
+```
+
 ### Verificar tipo de petición
 
 ```php
@@ -172,12 +255,17 @@ if ($request->isSecure()) {
 
 ## Decisiones arquitectónicas
 
-1. **Inmutabilidad**: Request nunca modifica su estado después de la creación.
+1. **Inmutabilidad**: Request no modifica su estado después de su creación.
 2. **Captura única**: Las superglobales se consultan solo una vez en `capture()`.
-3. **Constructor privado**: La única forma de crear instancias es mediante `capture()`.
-4. **Sin método get()**: Se evita la confusión con el verbo HTTP GET. Se usa `query()` para query string.
-5. **API explícita**: Cada método tiene un nombre claro que describe su origen.
-6. **Coordinación desde Router**: Request::capture() no pertenece al bootstrap; el Router coordina cuándo capturar la petición.
+3. **Creación inicial explícita**: `capture()` crea la instancia inicial de la petición.
+4. **Evolución inmutable**: `withRouteParameters()` devuelve una nueva instancia enriquecida con parámetros de ruta.
+5. **Sin mutadores**: No existirán métodos como `setRouteParameters()`.
+6. **Sin método get()**: Se evita la confusión con el verbo HTTP GET. Se usa `query()` para query string.
+7. **API explícita**: Cada método tiene un nombre claro que describe su origen.
+8. **Coordinación desde Router**: Request::capture() no pertenece al bootstrap; el Router coordina cuándo capturar la petición y cuándo usar la instancia enriquecida.
+9. **Parámetros de ruta dentro de Request**: Router resuelve parámetros nombrados y los incorpora usando `withRouteParameters()`.
+10. **Controller con un único argumento**: Los Controllers reciben solo Request y consultan parámetros mediante `route()`.
+11. **Inspiración PSR-7**: Se adopta una filosofía de métodos `with*` inmutables, sin implementar PSR-7 completo.
 
 ## Futuras mejoras
 

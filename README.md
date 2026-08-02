@@ -41,7 +41,8 @@ Apache
             ├─ Config
             └─ Router
                  ├─ Request::capture()
-                 ├─ resolver ruta
+                 ├─ resolver ruta y parámetros
+                 ├─ crear Request enriquecido con parámetros
                  ├─ Controller
                  │    └─ Service
                  │         └─ Model
@@ -50,7 +51,7 @@ Apache
                  └─ Response::send()
 ```
 
-`Request::capture()` no pertenece al bootstrap. El Router coordina el ciclo HTTP completo: captura la petición, resuelve la ruta, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía la respuesta final.
+`Request::capture()` no pertenece al bootstrap. El Router coordina el ciclo HTTP completo: captura la petición, resuelve la ruta, crea una nueva instancia de Request enriquecida con los parámetros resueltos, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía la respuesta final.
 
 ### Regla de capas
 
@@ -218,7 +219,8 @@ Cliente
   ↓
 Router
   ├─ Request::capture()
-  ├─ resolver ruta
+  ├─ resolver ruta y parámetros
+  ├─ crear Request enriquecido con parámetros
   ├─ Controller
   ├─ Response
   └─ Response::send()
@@ -284,7 +286,11 @@ $request->file('avatar');     // archivos multipart/form-data
 $request->header('Accept');   // cabeceras HTTP
 $request->cookie('session');  // cookies
 $request->server('REMOTE_ADDR'); // valores del servidor (uso estricto)
+$request->route('uuid');        // parámetros resueltos desde la ruta
+$request->routeParameters();    // todos los parámetros de ruta
 ```
+
+Router añadirá parámetros de ruta mediante `withRouteParameters(array $parameters): self`. Este método no modifica la instancia original: devuelve una nueva instancia de Request enriquecida, con una filosofía inspirada en PSR-7 sin implementar PSR-7 completo. No existirán mutadores como `setRouteParameters()`.
 
 Se evita deliberadamente `Request::get()` porque en el contexto HTTP significa "obtener un valor" y no guarda relación con el método HTTP GET. Las clases `Config`, `Env`, `Cache`, `Session` y otras clases de infraestructura sí utilizarán `get()` ya que en ese contexto el significado es explícito.
 
@@ -362,6 +368,7 @@ Cliente
   ↓
 Router ← captura CoreException
   ├─ Request::capture()
+  ├─ crear Request enriquecido con parámetros
   ├─ Controller
   ├─ Service
   ├─ Model

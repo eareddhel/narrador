@@ -13,6 +13,7 @@ Registro de decisiones de diseño del proyecto. Las decisiones arquitectónicas 
 | [ADR-003](adr/003-http-request-response-objects.md) | Aceptado | Request y Response como objetos por petición HTTP |
 | [ADR-004](adr/004-modular-configuration.md) | Aceptado | Configuración modular accedida exclusivamente mediante Config |
 | [ADR-005](adr/005-custom-core-exceptions.md) | Aceptado | Jerarquía de excepciones con CoreException como clase base |
+| [ADR-006](adr/006-explicit-router-and-invokable-controllers.md) | Aceptado | Router explícito y Controllers invocables |
 
 ---
 
@@ -86,3 +87,15 @@ Registro de decisiones de diseño del proyecto. Las decisiones arquitectónicas 
 **Decisión:** Router será un objeto que registra rutas explícitas, captura `Request::capture()`, resuelve método y URI, invoca Controllers invocables de una sola acción, recibe objetos Response y ejecuta `Response::send()`. No habrá reflexión, autodetección de rutas, attributes, annotations ni middleware en esta iteración.
 
 **Consecuencias:** El flujo HTTP queda explícito y predecible. Las rutas tienen un origen claro en `config/routes.php`. Los Controllers se mantienen pequeños y orientados a una acción.
+
+---
+
+### DEC-007: Parámetros de ruta dentro de Request
+
+**Estado:** Aceptada
+
+**Contexto:** Router resolverá rutas parametrizadas durante la Iteración 008.
+
+**Decisión:** Toda la información de la petición HTTP se representa mediante Request. Los parámetros de ruta resueltos por Router forman parte de la petición y no se entregan como argumentos independientes a los Controllers. Request mantiene una estrategia inmutable: Router utilizará `withRouteParameters(array $parameters): self`, que no modifica la instancia original y devuelve una nueva instancia enriquecida.
+
+**Consecuencias:** Los Controllers mantienen una única entrada (`Request`) y consultan parámetros de ruta mediante la API de Request. La firma aprobada continúa siendo `__invoke(Request $request): Response`. La decisión adopta una filosofía inspirada en PSR-7, sin implementar PSR-7 completo, y descarta mutadores como `setRouteParameters()`.
