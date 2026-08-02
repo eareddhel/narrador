@@ -379,14 +379,14 @@ Cada componente importante del Core contará con documentación técnica indepen
 
 | Documento | Componente |
 |---|---|
-| `autoloader.md` | Autoloader |
-| `env.md` | Env |
-| `config.md` | Config |
-| `response.md` | Response |
-| `request.md` | Request |
-| `view.md` | View |
-| `database.md` | Database |
-| `router.md` | Router |
+| `AUTOLOADER.md` | Autoloader |
+| `ENV.md` | Env |
+| `CONFIG.md` | Config |
+| `RESPONSE.md` | Response |
+| `REQUEST.md` | Request |
+| `VIEW.md` | View |
+| `DATABASE.md` | Database |
+| `ROUTER.md` | Router |
 
 Cada documento describirá:
 - Responsabilidad.

@@ -53,12 +53,12 @@ Reglas:
 ### Iteración 004 — Response
 Representa la respuesta HTTP de la aplicación. No depende de Request. API para respuestas JSON, redirecciones y cabeceras.
 
-Documentación: `docs/core/response.md`
+Documentación: `docs/core/RESPONSE.md`
 
 ### Iteración 005 — Request
 Representa la petición HTTP recibida. Acceso a datos de entrada sin superglobales. API explícita sin método `get()` para eliminar confusión con HTTP GET.
 
-Documentación: `docs/core/request.md`
+Documentación: `docs/core/REQUEST.md`
 
 ### Consolidación arquitectónica previa a View
 Jerarquía común de excepciones del Core mediante `CoreException`. ADRs formales para arquitectura del Core, servicios globales, objetos HTTP, configuración modular y excepciones propias.
@@ -72,17 +72,17 @@ Reglas consolidadas:
 ### Iteración 006 — View
 Motor de renderizado de plantillas.
 
-Documentación: `docs/core/view.md`
+Documentación: `docs/core/VIEW.md`
 
 ### Iteración 007 — Database
 Conexión PDO con patrón Singleton.
 
-Documentación: `docs/core/database.md`
+Documentación: `docs/core/DATABASE.md`
 
 ### Iteración 008 — Router
 Enrutador con soporte para rutas parametrizadas (`/project/{uuid}`). Coordina `Request::capture()`, resolución de rutas, controllers, captura de `CoreException` y envío final mediante `Response::send()`. Depende de Request, Response y View.
 
-Documentación: `docs/core/router.md`
+Documentación: `docs/core/ROUTER.md`
 
 Estructura de carpetas, convenciones PSR-4, separación de capas (Controller → Service → Model).
 
