@@ -9,6 +9,7 @@ Indice de decisiones arquitectonicas formales de Narrador Studio.
 | [ADR-003](003-http-request-response-objects.md) | Request y Response como objetos por peticion HTTP | Aceptado |
 | [ADR-004](004-modular-configuration.md) | Configuracion modular accedida exclusivamente mediante Config | Aceptado |
 | [ADR-005](005-custom-core-exceptions.md) | Jerarquia de excepciones con CoreException como clase base | Aceptado |
+| [ADR-006](006-explicit-router-and-invokable-controllers.md) | Router explicito y Controllers invocables | Aceptado |
 
 ## Uso
 
