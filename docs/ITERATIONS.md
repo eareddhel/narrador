@@ -29,3 +29,8 @@
 - Objetivo: Implementar la clase `App\Core\View` como un renderizador orientado a objetos capaz de localizar plantillas PHP, exponer datos, aplicar layouts, capturar la salida de forma segura y devolver el resultado mediante un objeto `Response`.
 - Estado: ✅ Completada
 - Commit: feat(core): implement view renderer
+
+## 007 - Core / Database
+- Objetivo: Implementar la clase `App\Core\Database` como una capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por instancia, consultas preparadas, operaciones de lectura y escritura, transacciones mediante callback y manejo de errores mediante `DatabaseException`.
+- Estado: ✅ Completada
+- Commit: feat(core): implement database abstraction
