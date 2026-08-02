@@ -759,3 +759,5 @@ feat(core): implement configuration loader
 ## Compromiso
 
 El README es la fuente de verdad. Cada decisión arquitectónica se registra aquí primero y luego se implementa. Esto mantiene consistencia entre el diseño y el código a medida que el proyecto crece.
+
+Lo suficientemente simple para comprenderlo en una tarde. Lo suficientemente sólido para construir productos durante años.
