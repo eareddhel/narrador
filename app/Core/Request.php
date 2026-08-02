@@ -26,18 +26,22 @@ final class Request
 
     private array $server = [];
 
+    private array $routeParameters = [];
+
     private function __construct(
         array $get,
         array $post,
         array $files,
         array $cookie,
-        array $server
+        array $server,
+        array $routeParameters = []
     ) {
         $this->get = $get;
         $this->post = $post;
         $this->files = $files;
         $this->cookie = $cookie;
         $this->server = $server;
+        $this->routeParameters = $routeParameters;
     }
 
     public static function capture(): self
@@ -53,7 +57,7 @@ final class Request
 
     public function method(): string
     {
-        return $this->server['REQUEST_METHOD'] ?? 'GET';
+        return strtoupper((string) ($this->server['REQUEST_METHOD'] ?? 'GET'));
     }
 
     public function isGet(): bool
@@ -105,6 +109,24 @@ final class Request
     public function server(string $key, mixed $default = null): mixed
     {
         return $this->server[$key] ?? $default;
+    }
+
+    public function route(string $key, mixed $default = null): mixed
+    {
+        return $this->routeParameters[$key] ?? $default;
+    }
+
+    public function routeParameters(): array
+    {
+        return $this->routeParameters;
+    }
+
+    public function withRouteParameters(array $parameters): self
+    {
+        $request = clone $this;
+        $request->routeParameters = $parameters;
+
+        return $request;
     }
 
     public function ip(): string
