@@ -2,244 +2,47 @@
 
 ## Responsabilidad
 
-Router será el componente del Core responsable de coordinar el ciclo HTTP completo de una petición concreta.
+Router es el componente del Core responsable de coordinar el ciclo HTTP de una petición concreta.
 
-Router capturará la petición, resolverá una ruta explícitamente registrada, invocará un Controller, recibirá un objeto `App\Core\Response`, gestionará excepciones del Core y enviará la respuesta final.
+Router registra rutas explícitas, captura o recibe un objeto `App\Core\Request`, resuelve método y path, extrae parámetros nombrados, enriquece Request de forma inmutable, invoca un handler, exige un objeto `App\Core\Response`, convierte errores en respuestas seguras y envía la respuesta una sola vez mediante `run()`.
 
-Router no será una fachada estática. Será un objeto con una colección interna de rutas registradas explícitamente.
+Router no es una fachada estática. Es un objeto con una colección interna de rutas agrupadas por método HTTP.
 
-## Filosofía de diseño
+## Naturaleza mutable
 
-La Iteración 008 priorizará un Router pequeño, explícito y fácil de razonar.
+Router es mutable durante su fase de configuración: `get()` y `post()` añaden rutas a su colección interna y devuelven `self` para permitir registro fluido.
 
-No habrá:
-
-- autodetección de rutas;
-- escaneo de directorios;
-- attributes;
-- annotations;
-- reflexión para descubrir rutas;
-- middleware;
-- expresiones regulares configurables;
-- generación inversa de URL.
-
-La arquitectura debe permitir evolución futura, pero sin anticipar abstracciones que todavía no son necesarias.
+Después de configurado, Router coordina peticiones sin usar estado estático, Singleton, Reflection, autodetección, attributes, annotations ni middleware.
 
 ## Ciclo de vida
 
 1. Bootstrap inicializa infraestructura global: Autoloader, Env y Config.
-2. Se crea/configura una instancia de Router.
-3. Se registran rutas explícitas.
-4. Router ejecuta `Request::capture()`.
-5. Router resuelve método HTTP y URI.
+2. Se crea una instancia de Router.
+3. Se registran rutas explícitas con `get()` y `post()`.
+4. `run()` captura la petición mediante `Request::capture()`.
+5. `dispatch()` resuelve método HTTP y path.
 6. Router extrae parámetros nombrados simples.
-7. Router construye o invoca el Controller correspondiente.
-8. El Controller recibe Request y devuelve Response.
-9. Router captura excepciones del Core.
-10. Router ejecuta `Response::send()` una única vez al final del ciclo.
+7. Router llama a `Request::withRouteParameters()`.
+8. Router invoca el Controller o callable con un único argumento Request.
+9. El handler devuelve Response.
+10. Router captura excepciones en el límite HTTP y las convierte en Response segura.
+11. `run()` ejecuta `Response::send()` una única vez.
 
-Bootstrap no captura Request. Router posee la coordinación de la petición concreta.
+`dispatch()` no envía salida. `run()` es el único método de Router que envía la respuesta.
 
-## API pública prevista
-
-La API final se definirá durante la Iteración 008, pero la forma aprobada será equivalente a:
+## API pública
 
 ```php
-$router->get('/', DashboardController::class);
-$router->get('/projects', ProjectController::class);
-$router->post('/projects', ProjectStoreController::class);
+public function __construct(?callable $controllerResolver = null)
+public function get(string $path, callable|string $handler): self
+public function post(string $path, callable|string $handler): self
+public function dispatch(Request $request): Response
+public function run(): void
 ```
-
-No se utilizará una fachada estática para registrar rutas.
-
-Router mantendrá internamente la colección de rutas registradas.
 
 ## Registro de rutas
 
-Las rutas serán explícitas y declarativas.
-
-El archivo canónico previsto es:
-
-```text
-config/routes.php
-```
-
-Ejemplo conceptual:
-
-```php
-return [
-    ['GET', '/', DashboardController::class],
-    ['GET', '/projects/{uuid}', ProjectShowController::class],
-    ['POST', '/projects', ProjectStoreController::class],
-];
-```
-
-Este ejemplo documenta la arquitectura, no fija todavía la implementación exacta del archivo.
-
-Reglas:
-
-- no se escanearán Controllers;
-- no se usarán attributes PHP;
-- no se usarán annotations;
-- no se usará reflexión para descubrir rutas;
-- no habrá convenciones ocultas;
-- el orden y origen de rutas serán explícitos;
-- Router será el único componente que interpretará las definiciones.
-
-## Métodos HTTP
-
-El soporte inicial será:
-
-- GET
-- POST
-
-Reglas:
-
-- GET se utiliza para lectura y navegación sin cambio de estado.
-- POST se utiliza para operaciones que crean, modifican, eliminan, generan o ejecutan acciones.
-- No se usará GET para cambios de estado.
-- El soporte de GET no contradice la preferencia por POST en operaciones mutables.
-
-Soporte futuro posible:
-
-- PUT
-- PATCH
-- DELETE
-
-## Parámetros de ruta
-
-Router soportará parámetros nombrados simples:
-
-```text
-/projects/{uuid}
-```
-
-Router deberá extraerlos como datos de ruta para el Controller.
-
-No se implementará todavía:
-
-- parámetros opcionales;
-- comodines;
-- regex configurables;
-- grupos de rutas;
-- prefijos;
-- nombres de rutas;
-- generación inversa de URL.
-
-Estos elementos quedan sujetos a una necesidad real futura.
-
-## Controladores invocables
-
-La convención principal será un Controller invocable por acción:
-
-```php
-final class DashboardController
-{
-    public function __invoke(Request $request): Response
-    {
-        // ...
-    }
-}
-```
-
-Principios:
-
-- Un Controller representa una acción.
-- Cada Controller tiene una responsabilidad principal.
-- Router invoca `__invoke()`.
-- El Controller recibe Request.
-- El Controller devuelve Response.
-- El Controller no ejecuta `echo`, `header()`, `exit()` ni `die()`.
-- El Controller no accede directamente a Database.
-- La lógica de negocio pertenece a Services.
-- View se inyectará o proporcionará como objeto cuando corresponda.
-- View no se utilizará como clase estática.
-
-No se implementará todavía un contenedor de dependencias. La construcción de Controllers con múltiples dependencias queda como decisión pendiente de implementación mínima para Iteración 008.
-
-## Ruta inexistente
-
-Una ruta inexistente por método HTTP o patrón de URI provocará:
-
-```php
-RouteNotFoundException
-```
-
-Router no devolverá silenciosamente `false`, `null` ni HTML directo.
-
-La excepción será capturada por el mecanismo central del ciclo HTTP.
-
-## Manejo de excepciones
-
-Router será responsable de capturar:
-
-```php
-CoreException
-```
-
-y convertirla en un objeto Response seguro.
-
-Principios:
-
-- Request no captura excepciones.
-- Response no captura excepciones.
-- Controllers no muestran errores directamente.
-- Router coordina el manejo final.
-- En `APP_DEBUG=true`, Router podrá ofrecer información diagnóstica controlada.
-- En producción, Router entregará mensajes seguros sin stack trace ni secretos.
-- Los errores deberán registrarse en `storage/logs/` cuando exista el componente de logging.
-- No se implementará logging en Iteración 008.
-- No se implementará una página HTML de errores salvo que se defina expresamente en Iteración 008.
-
-Las excepciones que no pertenezcan a `CoreException` también deberán gestionarse de forma segura en el límite HTTP, sin ocultar su naturaleza durante desarrollo.
-
-## Flujo HTTP consolidado
-
-```text
-Apache
-  -> public/index.php
-  -> bootstrap.php
-       -> Autoloader
-       -> Env
-       -> Config
-  -> Router
-       -> Request::capture()
-       -> resolver método y URI
-       -> extraer parámetros nombrados
-       -> construir/invocar Controller
-       -> Controller
-            -> Service
-                 -> Model
-                      -> Database
-            -> View
-            -> Response
-       -> capturar excepciones
-       -> Response::send()
-```
-
-Response se envía una única vez, al final del ciclo.
-
-## Middleware
-
-No se implementará middleware en Iteración 008.
-
-La arquitectura no debe impedir incorporarlo más adelante, pero no se añadirán pipeline, contratos ni clases anticipadas. Se aplicará YAGNI.
-
-## Dependencias
-
-Router dependerá de componentes del Core necesarios para coordinar el ciclo HTTP:
-
-- Request
-- Response
-- Config
-- CoreException
-- RouteNotFoundException
-
-Router no deberá conocer detalles internos de Services, Models o Database. Solo invocará Controllers y gestionará respuestas.
-
-## Ejemplos
-
-### Registro explícito
+Las rutas se registran de forma explícita:
 
 ```php
 $router->get('/', DashboardController::class);
@@ -247,34 +50,280 @@ $router->get('/projects/{uuid}', ProjectShowController::class);
 $router->post('/projects', ProjectStoreController::class);
 ```
 
-### Controller invocable
+También se aceptan callables y objetos invocables, lo que permite pruebas sin Controllers reales.
+
+Reglas:
+
+- solo se implementan GET y POST;
+- toda ruta registrada comienza por `/`;
+- `/` permanece `/`;
+- las demás rutas no conservan slash final;
+- no se aceptan definiciones vacías;
+- no se usa query string para el matching;
+- una ruta existente bajo otro método produce 404 en esta versión;
+- no se implementa 405 Method Not Allowed.
+
+## Matching
+
+Router normaliza tanto rutas registradas como paths entrantes.
+
+Ejemplos:
+
+| Definición | URI entrante | Resultado |
+|------------|--------------|-----------|
+| `/` | `/` | match |
+| `/projects` | `/projects/` | match |
+| `/projects/{uuid}` | `/projects/6ab4...` | match |
+| `/projects/{uuid}` | `/projects/6ab4...?tab=audio` | match sobre path sin query string |
+
+No se implementan:
+
+- parámetros opcionales;
+- comodines;
+- regex configurables;
+- grupos;
+- prefijos;
+- nombres de rutas;
+- generación inversa de URL.
+
+## Parámetros nombrados
+
+Router soporta parámetros nombrados simples por segmento:
+
+```text
+/projects/{uuid}
+/projects/{project}/sections/{section}
+```
+
+Cada placeholder:
+
+- debe tener nombre no vacío;
+- debe tener un nombre válido;
+- no puede repetirse dentro de la misma ruta;
+- coincide con un único segmento;
+- no atraviesa `/`;
+- se extrae como string;
+- se decodifica con `rawurldecode()`.
+
+Router no entrega parámetros como argumentos independientes. Los incorpora a una nueva instancia de Request:
+
+```php
+$request = $request->withRouteParameters($parameters);
+```
+
+El Controller consulta los valores desde Request:
+
+```php
+$uuid = $request->route('uuid');
+$parameters = $request->routeParameters();
+```
+
+## Controladores invocables
+
+La convención principal es un Controller invocable por acción:
 
 ```php
 final class ProjectShowController
 {
     public function __invoke(Request $request): Response
     {
-        // Resolver datos, delegar en Services y devolver Response.
+        $uuid = $request->route('uuid');
+
+        // Delegar en Services y devolver Response.
     }
 }
 ```
 
+La única firma aprobada es:
+
+```php
+public function __invoke(Request $request): Response
+```
+
+No se pasan parámetros de ruta como argumentos adicionales.
+
+## Resolución de Controllers
+
+Router admite:
+
+1. Callables.
+2. Objetos invocables.
+3. Class-strings de Controllers invocables.
+
+Para un class-string:
+
+- si existe un resolver inyectado, Router lo utiliza;
+- si no existe resolver, Router instancia con `new $class()`;
+- Router verifica que la clase exista;
+- Router verifica que la instancia resultante sea invocable.
+
+No hay autowiring, contenedor de dependencias ni inspección de constructores.
+
+## Controller Resolver
+
+El constructor acepta un resolver opcional:
+
+```php
+$router = new Router(function (string $class): object {
+    return new $class();
+});
+```
+
+Su objetivo es facilitar pruebas y permitir una futura estrategia de construcción de Controllers con dependencias sin introducir todavía un contenedor.
+
+## dispatch()
+
+```php
+$response = $router->dispatch($request);
+```
+
+Responsabilidades:
+
+- resolver método HTTP y path;
+- encontrar la ruta;
+- extraer parámetros nombrados;
+- enriquecer Request con `withRouteParameters()`;
+- resolver e invocar el handler;
+- exigir que el resultado sea Response;
+- convertir excepciones en respuestas seguras;
+- devolver Response.
+
+`dispatch()` no ejecuta `send()` y no imprime salida.
+
+## run()
+
+```php
+$router->run();
+```
+
+Responsabilidades:
+
+1. Crear la petición con `Request::capture()`.
+2. Ejecutar `dispatch()`.
+3. Enviar una única vez mediante `Response::send()`.
+
+`run()` no ejecuta `exit()` ni `die()`.
+
+## Ruta inexistente
+
+Si no existe coincidencia para método y path, Router genera internamente `RouteNotFoundException` y `dispatch()` la convierte en una respuesta HTTP 404.
+
+No se devuelve `false`, `null` ni HTML directo.
+
+## Manejo de excepciones
+
+Router representa el límite HTTP y convierte errores en Response.
+
+| Error | Status |
+|-------|--------|
+| `RouteNotFoundException` | 404 |
+| Otras `CoreException` | 500 |
+| Otros `Throwable` | 500 |
+
+Las respuestas de error usan:
+
+```text
+Content-Type: text/plain; charset=UTF-8
+```
+
+### Producción
+
+Cuando `Config::get('app.debug', false)` es `false`, el cuerpo contiene mensajes seguros y genéricos.
+
+No expone:
+
+- stack trace;
+- rutas internas;
+- SQL;
+- credenciales;
+- DSN;
+- variables de entorno.
+
+### Debug
+
+Cuando `Config::get('app.debug', false)` es `true`, Router puede incluir diagnóstico controlado:
+
+- clase de excepción;
+- mensaje;
+- archivo y línea.
+
+No incluye automáticamente el stack trace completo.
+
+No se implementa logging todavía y no se renderizan vistas HTML de error.
+
+## Interacción con Request y Response
+
+Request representa toda la petición HTTP. Router utiliza `withRouteParameters()` para producir una nueva instancia enriquecida con parámetros de ruta sin modificar la original.
+
+Response representa el resultado HTTP. Los handlers deben devolver Response. Router no convierte strings, arrays ni null silenciosamente en Response; un retorno inválido se considera error de programación y se transforma en Response 500 en el límite HTTP.
+
+## Límites actuales
+
+Router no implementa:
+
+- middleware;
+- autodetección de Controllers;
+- Reflection;
+- attributes;
+- annotations;
+- contenedor de dependencias;
+- autowiring;
+- sesiones;
+- CSRF;
+- autenticación;
+- generación de URLs;
+- logging;
+- PUT, PATCH o DELETE;
+- 405 Method Not Allowed.
+
+Router tampoco ejecuta SQL, accede a Database, renderiza View directamente ni contiene lógica de negocio.
+
+## Ejemplos
+
+### Registro explícito
+
+```php
+$router = new Router();
+
+$router
+    ->get('/', DashboardController::class)
+    ->get('/projects/{uuid}', ProjectShowController::class)
+    ->post('/projects', ProjectStoreController::class);
+```
+
+### Dispatch aislado
+
+```php
+$request = Request::capture();
+$response = $router->dispatch($request);
+```
+
+### Ejecución completa
+
+```php
+$router->run();
+```
+
 ## Decisiones arquitectónicas
 
-1. **Router como objeto**: No se usará fachada estática.
-2. **Rutas explícitas**: El origen de rutas será declarativo y visible.
-3. **Controllers invocables**: Un Controller representa una acción.
-4. **Router coordina Request y Response**: Captura Request y envía Response.
-5. **RouteNotFoundException**: Las rutas inexistentes se expresan con excepción del Core.
-6. **Sin autodetección**: No hay attributes, annotations, reflexión ni escaneo.
-7. **Parámetros simples**: Se admiten parámetros nombrados como `{uuid}`.
-8. **Sin middleware inicial**: Middleware queda aplazado por YAGNI.
+1. **Router como objeto**: No se usa API estática ni fachada estática.
+2. **Rutas explícitas**: No hay autodetección ni escaneo de directorios.
+3. **Controllers invocables**: Cada Controller representa una acción.
+4. **Request único**: Los Controllers reciben solo Request.
+5. **Parámetros inmutables**: Router usa `withRouteParameters()` para enriquecer Request.
+6. **dispatch() testeable**: Devuelve Response sin enviarla.
+7. **run() como límite de envío**: Captura Request y ejecuta `send()` una vez.
+8. **Errores seguros**: Las excepciones se convierten en respuestas controladas.
+9. **Sin middleware inicial**: Middleware queda aplazado por YAGNI.
+10. **Sin contenedor todavía**: El resolver opcional permite evolución futura sin autowiring.
 
 ## Futuras mejoras
 
 - Soporte para PUT, PATCH y DELETE.
+- 405 Method Not Allowed.
 - Middleware cuando exista una necesidad real.
 - Nombres de rutas y generación inversa de URL.
 - Grupos y prefijos de rutas.
 - Páginas de error HTML especializadas.
 - Logging centralizado de errores.
+- Integración de `config/routes.php` cuando se conecte el front controller.

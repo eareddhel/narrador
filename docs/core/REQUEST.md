@@ -14,7 +14,7 @@ La creación inicial de una instancia se realiza mediante el método estático `
 $request = Request::capture();
 ```
 
-Router podrá enriquecer la petición con parámetros de ruta mediante `withRouteParameters(array $parameters): self`. Ese método no modifica la instancia original; devuelve una nueva instancia con los parámetros incorporados.
+Router enriquece la petición con parámetros de ruta mediante `withRouteParameters(array $parameters): self`. Ese método no modifica la instancia original; devuelve una nueva instancia con los parámetros incorporados.
 
 Esta estrategia adopta una filosofía inspirada en PSR-7, sin implementar PSR-7 completo. Request mantiene una API propia, pequeña y coherente con Narrador Studio.
 
@@ -65,7 +65,7 @@ No existen setters públicos. No existirán mutadores como `setRouteParameters()
 |--------|---------|-------------|
 | `route(string $key, mixed $default = null)` | `mixed` | Obtiene un parámetro resuelto desde la URI |
 | `routeParameters()` | `array` | Retorna todos los parámetros de ruta |
-| `withRouteParameters(array $parameters)` | `self` | Devuelve una nueva instancia con parámetros de ruta |
+| `withRouteParameters(array $parameters): self` | `self` | Devuelve una nueva instancia con parámetros de ruta |
 
 Los parámetros de ruta representan valores obtenidos desde la URI al resolver una ruta explícita.
 
@@ -137,7 +137,7 @@ El constructor es privado en la implementación actual. `capture()` crea la inst
 public function withRouteParameters(array $parameters): self
 ```
 
-`withRouteParameters()` será el único mecanismo documentado para añadir parámetros de ruta a Request.
+`withRouteParameters()` es el único mecanismo para añadir parámetros de ruta a Request.
 
 Reglas:
 
@@ -148,7 +148,7 @@ Reglas:
 - será utilizado por Router después de resolver la ruta;
 - no estará pensado para uso desde Controllers, Services, Models ni Views.
 
-No se documenta todavía la implementación interna exacta del constructor o clonación. La restricción arquitectónica sí queda fijada: no habrá mutadores como `setRouteParameters()`.
+`withRouteParameters()` clona la instancia actual, reemplaza los parámetros de ruta en el clon y conserva intacta la instancia original. No habrá mutadores como `setRouteParameters()`.
 
 ### header()
 
