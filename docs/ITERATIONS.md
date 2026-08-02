@@ -34,3 +34,8 @@
 - Objetivo: Implementar la clase `App\Core\Database` como una capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por instancia, consultas preparadas, operaciones de lectura y escritura, transacciones mediante callback y manejo de errores mediante `DatabaseException`.
 - Estado: ✅ Completada
 - Commit: feat(core): implement database abstraction
+
+## 008 - Core / Router
+- Objetivo: Implementar la clase `App\Core\Router` como coordinador explícito del ciclo HTTP, con registro de rutas GET y POST, parámetros nombrados, Controllers invocables, enriquecimiento inmutable de `Request`, despacho de respuestas y manejo seguro de excepciones.
+- Estado: ✅ Completada
+- Commit: feat(core): implement explicit HTTP router
