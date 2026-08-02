@@ -293,7 +293,7 @@ Se evita deliberadamente `Request::get()` porque en el contexto HTTP significa "
 Renderizado de plantillas.
 
 #### Database (`app/Core/Database.php`)
-Conexión PDO con patrón Singleton.
+Capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por instancia.
 
 #### Router (`app/Core/Router.php`)
 Enrutador que coordina el ciclo HTTP. Captura la petición con `Request::capture()`, resuelve la ruta, invoca el controller, recibe un objeto Response, captura excepciones del Core y envía finalmente la respuesta con `Response::send()`. Soporte para rutas:

@@ -75,7 +75,7 @@ Motor de renderizado de plantillas.
 Documentación: `docs/core/VIEW.md`
 
 ### Iteración 007 — Database
-Conexión PDO con patrón Singleton.
+Capa orientada a objetos sobre PDO, sin Singleton, con conexión encapsulada por instancia. Utilizará prepared statements, soportará transacciones, transformará errores PDO en `DatabaseException` y no implementará ORM ni Query Builder.
 
 Documentación: `docs/core/DATABASE.md`
 
