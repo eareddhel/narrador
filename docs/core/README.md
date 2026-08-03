@@ -21,9 +21,9 @@ Cada documento describe:
 | Response | ✅ |
 | Request | ✅ |
 | Exceptions | ✅ |
-| View | ⏳ |
-| Database | ⏳ |
-| Router | ⏳ |
+| View | ✅ |
+| Database | ✅ |
+| Router | ✅ |
 
 ## Servicios globales
 
