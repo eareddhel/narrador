@@ -792,3 +792,14 @@ node_modules nunca es servido directamente por Apache.
 
 Los assets públicos forman parte del repositorio.
 node_modules no forma parte del repositorio.
+
+## Dependencias frontend autorizadas
+
+Actualmente:
+
+- bootstrap
+- bootstrap-icons
+
+La incorporación de nuevas dependencias requiere una justificación técnica.
+
+Siempre que sea posible se preferirá código propio antes que añadir una dependencia externa.
