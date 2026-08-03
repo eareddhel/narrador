@@ -14,3 +14,7 @@ $autoloader->register(ROOT_PATH . '/app');
 App\Core\Env::load();
 
 App\Core\Config::load();
+
+return [
+    'view' => new App\Core\View(),
+];

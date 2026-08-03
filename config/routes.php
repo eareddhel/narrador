@@ -1,5 +1,11 @@
 <?php
 
+use App\Controllers\DashboardController;
+
 return [
-    'routes' => [],
+    [
+        'method' => 'GET',
+        'path' => '/',
+        'handler' => DashboardController::class,
+    ],
 ];
