@@ -779,3 +779,16 @@ feat(core): implement configuration loader
 El README es la fuente de verdad. Cada decisión arquitectónica se registra aquí primero y luego se implementa. Esto mantiene consistencia entre el diseño y el código a medida que el proyecto crece.
 
 Lo suficientemente simple para comprenderlo en una tarde. Lo suficientemente sólido para construir productos durante años.
+
+
+## Gestor de paquetes: npm
+
+Dependencias instaladas mediante npm.
+Los archivos servidos al navegador se publican desde:
+
+public/assets/vendor/
+
+node_modules nunca es servido directamente por Apache.
+
+Los assets públicos forman parte del repositorio.
+node_modules no forma parte del repositorio.
