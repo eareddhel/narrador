@@ -55,3 +55,15 @@
   - Service funcional.
   - Creación, consulta, listado, actualización y archivo probados.
   - ID interno no expuesto.
+### M02.2 — Primer flujo funcional completo
+
+- Objetivo: implementar el primer flujo funcional completo del producto para listar proyectos, crear uno nuevo, validar la entrada, persistirlo y abrir automáticamente el proyecto recién creado.
+- Estado: Pendiente
+- Alcance:
+  - listado de proyectos;
+  - formulario de creación;
+  - validación;
+  - persistencia;
+  - redirección;
+  - apertura automática del proyecto creado.
+- Criterio de cierre: crear un proyecto desde la interfaz debe persistirlo y redirigir automáticamente a su espacio de trabajo.
