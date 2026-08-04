@@ -3,6 +3,9 @@
 $pageTitle = isset($title) && is_string($title) && $title !== '' ? $title : 'Narrador Studio';
 $applicationName = isset($appName) && is_string($appName) && $appName !== '' ? $appName : 'Narrador Studio';
 $versionLabel = isset($appVersion) && is_string($appVersion) && $appVersion !== '' ? $appVersion : 'v0.1';
+$navigationContext = isset($navigationContext) && is_string($navigationContext) && $navigationContext !== ''
+    ? $navigationContext
+    : 'Inicio';
 ?>
 <!doctype html>
 <html lang="es">
@@ -19,17 +22,20 @@ $versionLabel = isset($appVersion) && is_string($appVersion) && $appVersion !== 
         <header class="studio-header border-bottom">
             <div class="container py-3 py-md-4">
                 <div class="d-flex align-items-center justify-content-between gap-3">
-                    <div class="d-flex align-items-center gap-3">
+                    <a class="brand-home-link d-flex align-items-center gap-3" href="/" aria-label="Volver al Dashboard de Narrador Studio">
                         <span class="brand-mark" aria-hidden="true"></span>
-                        <div>
-                            <p class="brand-name mb-0"><?= htmlspecialchars($applicationName, ENT_QUOTES, 'UTF-8') ?></p>
-                            <p class="brand-subtitle mb-0">Producción organizada de narraciones</p>
-                        </div>
-                    </div>
+                        <span>
+                            <span class="brand-name mb-0 d-block"><?= htmlspecialchars($applicationName, ENT_QUOTES, 'UTF-8') ?></span>
+                            <span class="brand-subtitle mb-0 d-block">Producción organizada de narraciones</span>
+                        </span>
+                    </a>
                     <div class="d-flex align-items-center gap-2">
                         <span class="version-pill"><?= htmlspecialchars($versionLabel, ENT_QUOTES, 'UTF-8') ?></span>
                         <span class="global-actions-slot d-none d-sm-inline-flex" aria-label="Espacio reservado para futuras acciones globales"></span>
                     </div>
+                </div>
+                <div class="navigation-context mt-3" aria-label="Ubicación actual">
+                    <?= htmlspecialchars($navigationContext, ENT_QUOTES, 'UTF-8') ?>
                 </div>
             </div>
         </header>
@@ -42,7 +48,7 @@ $versionLabel = isset($appVersion) && is_string($appVersion) && $appVersion !== 
             <div class="container py-3">
                 <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
                     <span>&copy; <?= date('Y') ?> Narrador Studio</span>
-                    <span><?= htmlspecialchars($versionLabel, ENT_QUOTES, 'UTF-8') ?> · Core operativo</span>
+                    <span><?= htmlspecialchars($versionLabel, ENT_QUOTES, 'UTF-8') ?> · Creado con amor por Regline</span>
                 </div>
             </div>
         </footer>

@@ -287,3 +287,101 @@ textarea,
         padding: 1.25rem;
     }
 }
+.project-card .project-open-link {
+    color: var(--studio-accent-strong);
+    font-family: Verdana, Geneva, sans-serif;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.studio-secondary-action {
+    border-radius: 8px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-control {
+    border-color: var(--studio-line);
+    border-radius: 8px;
+    background: #fffdf8;
+}
+
+.form-control:focus {
+    border-color: var(--studio-accent);
+    box-shadow: 0 0 0 0.2rem rgba(47, 111, 115, 0.16);
+}
+
+.form-label {
+    color: var(--studio-ink);
+    font-family: Verdana, Geneva, sans-serif;
+    font-weight: 700;
+}
+
+.alert-danger {
+    border-color: #d8a19b;
+    background: #fff2ef;
+    color: #7a2f28;
+    border-radius: 8px;
+}
+
+.project-hero .display-title {
+    max-width: 14ch;
+}
+
+.meta-item {
+    border: 1px solid var(--studio-line);
+    border-radius: 8px;
+    background: rgba(255, 252, 246, 0.92);
+    padding: 1.25rem;
+}
+
+.meta-item span,
+.meta-item strong {
+    display: block;
+}
+
+.meta-item span {
+    color: var(--studio-muted);
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.meta-item strong {
+    color: var(--studio-ink);
+    margin-top: 0.45rem;
+    overflow-wrap: anywhere;
+}
+.project-status-badge {
+    align-self: flex-start;
+    text-transform: none;
+}
+.brand-home-link {
+    color: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.brand-home-link:hover {
+    color: inherit;
+    opacity: 0.82;
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+.brand-home-link:focus-visible {
+    outline: 3px solid var(--studio-focus);
+    outline-offset: 4px;
+}
+
+.navigation-context {
+    color: var(--studio-muted);
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 0.76rem;
+    opacity: 0.72;
+}
