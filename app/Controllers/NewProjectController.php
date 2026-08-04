@@ -6,7 +6,7 @@ declare(strict_types=1);
 |--------------------------------------------------------------------------
 | Narrador Studio
 |--------------------------------------------------------------------------
-| Archivo : DashboardController.php
+| Archivo : NewProjectController.php
 | Autor   : Roberto + ChatGPT
 | Versión : 0.1.0
 |--------------------------------------------------------------------------
@@ -18,13 +18,11 @@ use App\Core\Config;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\View;
-use App\Services\ProjectService;
 
-final class DashboardController
+final class NewProjectController
 {
     public function __construct(
-        private readonly View $view,
-        private readonly ProjectService $projects
+        private readonly View $view
     ) {
     }
 
@@ -33,14 +31,14 @@ final class DashboardController
         $appName = Config::get('app.name', 'Narrador Studio');
         $appVersion = Config::get('app.version');
 
-        return $this->view->render('dashboard', [
-            'title' => 'Narrador Studio',
+        return $this->view->render('projects/new', [
+            'title' => 'Crear proyecto',
             'appName' => is_string($appName) && $appName !== '' ? $appName : 'Narrador Studio',
             'appVersion' => is_string($appVersion) && $appVersion !== '' ? $appVersion : null,
-            'pageHeading' => 'Narrador Studio',
-            'emptyStateMessage' => 'Aún no tienes proyectos.',
-            'projects' => $this->projects->listActive(),
-            'navigationContext' => 'Inicio',
+            'name' => '',
+            'description' => '',
+            'errors' => [],
+            'navigationContext' => 'Inicio / Nuevo proyecto',
         ]);
     }
 }
