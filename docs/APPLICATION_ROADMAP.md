@@ -25,3 +25,33 @@
 - `public/assets/css/app.css`
 
 **Criterio de cierre:** `GET /` responde 200 y renderiza el Dashboard mediante Router, Controller, View y Response reales con el sistema visual base aplicado.
+
+## M02 — Projects
+
+**Estado:** En revisión
+
+**Subfase:** M02.1 — Dominio y persistencia
+
+**Objetivo:** implementar la capa minima de dominio y persistencia de Projects sin rutas, Controllers, formularios ni vistas.
+
+**Sistema implementado:** esquema reproducible de `projects`, Model orientado a datos, Service con reglas de aplicacion, UUID publico, archivo logico y pruebas con SQLite en memoria.
+
+**Componentes conectados:**
+
+- `database/schema.sql`
+- `App\Models\Project`
+- `App\Services\ProjectService`
+- `App\Core\Database`
+- `tools/test-projects.php`
+
+**Criterio de cierre:** esquema reproducible; Model funcional; Service funcional; creacion, consulta, listado, actualizacion y archivo probados.
+
+### M02.1 — Dominio y persistencia
+- Objetivo: Implementar el esquema, Model y Service del módulo Projects, con UUID público, validación, operaciones CRUD internas y archivo lógico.
+- Estado: ✅ Completada
+- Criterios cumplidos:
+  - Esquema MySQL aplicado.
+  - Model funcional.
+  - Service funcional.
+  - Creación, consulta, listado, actualización y archivo probados.
+  - ID interno no expuesto.
