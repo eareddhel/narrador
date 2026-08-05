@@ -6,7 +6,7 @@ Este documento define el modelo conceptual de Narrador Studio.
 
 No describe la implementación técnica, la base de datos ni la interfaz de usuario.
 
-Su objetivo es responder cómo se construye una narración dentro de Narrador Studio y cuál es la relación entre los distintos elementos que participan en el proceso creativo.
+Su propósito es definir cómo se organiza el conocimiento dentro de Narrador Studio y cómo una idea termina convirtiéndose en una narración completa.
 
 Cada nueva funcionalidad deberá respetar este modelo antes de ser implementada.
 
@@ -16,14 +16,16 @@ Cada nueva funcionalidad deberá respetar este modelo antes de ser implementada.
 
 Narrador Studio no parte desde un texto.
 
-Parte desde una idea.
+Parte desde un tema.
 
-El objetivo de la aplicación es acompañar el proceso creativo completo, desde el nacimiento de una idea hasta la generación del contenido final.
+A partir de ese tema el usuario construye una narración utilizando un método narrativo, desarrollando ideas y transformándolas progresivamente en un contenido listo para narrar.
 
-El modelo general es el siguiente:
+El modelo conceptual es el siguiente.
 
 ```
 Proyecto
+    ↓
+Tema
     ↓
 Narración
     ↓
@@ -44,47 +46,63 @@ Cada nivel representa una etapa distinta del proceso creativo.
 
 ---
 
-# ¿Qué es una idea?
+# ¿Qué es un proyecto?
 
-La idea constituye la unidad mínima del pensamiento.
+Un proyecto representa un espacio de trabajo.
 
-Es una observación, concepto, frase, pregunta o recuerdo que aparece durante el proceso creativo.
+Su propósito es reunir narraciones relacionadas por un mismo objetivo.
 
-Una idea:
+Ejemplos:
 
-- puede capturarse en cualquier momento;
-- todavía no representa un texto;
-- puede modificarse;
-- puede eliminarse;
-- puede reorganizarse;
-- puede convertirse posteriormente en parte de una narración.
+- EstilApp
+- Filosofía en Historias
+- Classbook
+- Credencial Digital de Discapacidad
 
-Las ideas existen para evitar que la inspiración se pierda.
+Un proyecto puede contener múltiples temas.
 
 ---
 
-# ¿Qué es un paso?
+# ¿Qué es un tema?
 
-Un paso representa una parte del método narrativo.
+El tema representa aquello sobre lo que el creador desea hablar.
 
-No contiene una historia completa.
+No es todavía una narración.
 
-Contiene un propósito específico dentro de la narración.
+No contiene un guion.
 
-Ejemplos de pasos:
+No contiene audio.
 
-- Gancho
-- Problema
-- Demostración
-- Llamado a la acción
+Simplemente define el asunto que será desarrollado posteriormente.
 
-o bien:
+Ejemplos:
 
-- Introducción
-- Desarrollo
-- Conclusión
+- Reserva de hora
+- Sócrates
+- El gato que bota la taza
+- Firma electrónica
 
-Los pasos guían al usuario para evitar enfrentarse a una página completamente en blanco.
+Un mismo tema puede dar origen a múltiples narraciones.
+
+---
+
+# ¿Qué es una narración?
+
+Una narración representa una historia completa construida a partir de un tema.
+
+Toda narración pertenece a un único tema.
+
+Cada narración puede utilizar un método narrativo distinto.
+
+Por ejemplo, un mismo tema podría desarrollarse como:
+
+- Video corto para TikTok.
+- Tutorial completo.
+- Podcast.
+- Historia.
+- Presentación.
+
+La narración constituye la unidad principal de producción de contenido.
 
 ---
 
@@ -92,19 +110,21 @@ Los pasos guían al usuario para evitar enfrentarse a una página completamente 
 
 Un método narrativo define la estructura utilizada para construir una narración.
 
-No pertenece a una narración específica.
+No pertenece al proyecto.
 
-Puede reutilizarse tantas veces como sea necesario.
+No pertenece al tema.
+
+Puede reutilizarse en cualquier narración.
 
 Un método está compuesto por una secuencia ordenada de pasos.
 
-Narrador Studio incluye métodos predefinidos, pero cada usuario podrá crear sus propios métodos.
+Narrador Studio ofrecerá métodos predefinidos y permitirá que cada usuario construya los suyos.
 
 ---
 
-# Biblioteca de métodos
+# Biblioteca inicial de métodos
 
-Narrador Studio incorpora una biblioteca inicial de métodos narrativos.
+Narrador Studio incorpora una biblioteca base.
 
 Ejemplos:
 
@@ -116,73 +136,94 @@ Ejemplos:
 - Podcast corto
 - Pitch comercial
 
-Además existe una categoría especial:
+Además existirá una categoría especial.
 
-**Mis métodos**
+## Mis métodos
 
-En ella cada usuario podrá crear y reutilizar sus propias estructuras narrativas.
-
----
-
-# ¿Qué es una narración?
-
-Una narración representa una historia completa.
-
-Toda narración pertenece exactamente a un proyecto.
-
-Toda narración utiliza un único método narrativo.
-
-Una narración está compuesta por una secuencia de pasos.
-
-Cada paso podrá contener ideas, texto y posteriormente una narración de audio.
-
-Una narración constituye la unidad de trabajo principal del creador de contenido.
+Cada usuario podrá crear sus propias estructuras narrativas y reutilizarlas en cualquier proyecto.
 
 ---
 
-# ¿Qué es un proyecto?
+# ¿Qué es un paso?
 
-Un proyecto representa un espacio de trabajo.
+Un paso representa un objetivo narrativo dentro del método seleccionado.
 
-No contiene únicamente archivos.
+Ejemplos.
 
-Contiene un conjunto de narraciones relacionadas por un mismo propósito.
+Método TikTok.
 
-Ejemplos de proyectos:
+- Gancho
+- Problema
+- Demostración
+- Llamado a la acción
 
-- Filosofía en Historias
-- EstilApp
-- Classbook
-- Credencial Digital de Discapacidad
+Método Historia.
 
-Dentro de cada proyecto pueden existir tantas narraciones como sea necesario.
+- Introducción
+- Conflicto
+- Desarrollo
+- Desenlace
+- Reflexión
+
+Los pasos organizan la construcción de la historia y reducen la incertidumbre durante el proceso creativo.
+
+---
+
+# ¿Qué es una idea?
+
+La idea constituye la unidad mínima del pensamiento.
+
+Una idea puede ser:
+
+- una frase;
+- un ejemplo;
+- una metáfora;
+- una observación;
+- una cita;
+- una analogía;
+- una escena.
+
+Las ideas aparecen durante el trabajo creativo.
+
+No representan todavía texto definitivo.
+
+Pueden:
+
+- capturarse;
+- editarse;
+- eliminarse;
+- reorganizarse;
+- reutilizarse.
+
+Posteriormente podrán incorporarse a uno o varios pasos de una narración.
 
 ---
 
 # Relaciones
 
-El modelo conceptual queda definido por las siguientes relaciones.
-
 ```
 Proyecto
 │
-├── Narración
-│      │
-│      ├── Método narrativo
-│      │       │
-│      │       ├── Paso
-│      │       ├── Paso
-│      │       ├── Paso
-│      │       └── Paso
-│      │
-│      ├── Ideas
-│      ├── Texto
-│      ├── Audio
-│      └── Exportaciones
+├── Tema
+│     │
+│     ├── Narración
+│     │      │
+│     │      ├── Método narrativo
+│     │      │       │
+│     │      │       ├── Paso
+│     │      │       ├── Paso
+│     │      │       └── Paso
+│     │      │
+│     │      ├── Ideas
+│     │      ├── Texto
+│     │      ├── Audio
+│     │      └── Exportaciones
+│     │
+│     └── Narración
 │
-├── Narración
+├── Tema
 │
-└── Narración
+└── Tema
 ```
 
 ---
@@ -191,45 +232,51 @@ Proyecto
 
 ## Todo contenido pertenece a una narración.
 
-No existen textos, audios o exportaciones aisladas.
-
-Todo contenido forma parte de una narración.
+No existen textos ni audios independientes.
 
 ---
 
-## Toda narración pertenece a un proyecto.
+## Toda narración pertenece a un tema.
 
-El proyecto constituye el espacio de trabajo del usuario.
+La narración desarrolla un único asunto.
+
+---
+
+## Todo tema pertenece a un proyecto.
+
+El proyecto reúne el conjunto de temas relacionados por un mismo propósito.
 
 ---
 
 ## Toda narración utiliza un método narrativo.
 
-El método proporciona una estructura para reducir la incertidumbre durante el proceso creativo.
+El método proporciona una estructura para construir la historia.
 
 ---
 
-## Un método está compuesto por pasos reutilizables.
+## Un método está compuesto por pasos.
 
 Los pasos representan objetivos narrativos.
 
-No representan textos.
+No representan texto.
 
 ---
 
 ## Las ideas aparecen antes que los textos.
 
-Narrador Studio prioriza la captura de ideas por encima de la escritura.
-
-El usuario nunca debería perder una idea por no saber todavía dónde desarrollarla.
+Narrador Studio prioriza capturar el pensamiento antes de escribir.
 
 ---
 
 ## La complejidad aparece cuando es necesaria.
 
-El usuario comienza con una estructura simple.
+El usuario comienza organizando temas.
 
-Las funcionalidades más avanzadas aparecen únicamente cuando el proyecto las requiere.
+Después desarrolla narraciones.
+
+Más tarde escribe.
+
+Finalmente genera audio y exportaciones.
 
 ---
 
@@ -239,8 +286,52 @@ Narrador Studio no pretende únicamente convertir texto en voz.
 
 Su propósito es ayudar a organizar el pensamiento antes, durante y después de construir una historia.
 
-La aplicación acompaña el proceso creativo reduciendo la incertidumbre sobre cuál es el siguiente paso.
+La aplicación acompaña al creador reduciendo la incertidumbre sobre cuál es el siguiente paso.
+
+El conocimiento se organiza desde el proyecto hasta la narración final, permitiendo que una misma idea evolucione de forma ordenada sin perderse durante el proceso creativo.
 
 El audio es una consecuencia del proceso.
 
 La historia siempre es el centro.
+
+# Ejemplo
+
+Proyecto
+
+EstilApp
+
+↓
+
+Tema
+
+Reserva de hora
+
+↓
+
+Narraciones
+
+- TikTok (60 s)
+- Tutorial completo
+- Reel
+- Historia para Instagram
+
+Proyecto
+
+Filosofía en Historias
+
+↓
+
+Tema
+
+Sócrates
+
+↓
+
+Narraciones
+
+- Sócrates en 60 segundos
+- El juicio de Sócrates
+- La ironía socrática
+- ¿Por qué fue condenado?
+
+El tema no limita al creador a una única narración. Al contrario, se convierte en un núcleo de conocimiento desde el cual pueden surgir múltiples historias con enfoques, duraciones y métodos distintos.
